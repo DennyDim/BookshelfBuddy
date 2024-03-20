@@ -1,0 +1,97 @@
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+      
+      {# TODO: Insert logo image #}
+    <div class="title">
+    <title>Literary Lounge</title>
+      <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/journal/bootstrap.min.css">
+        </div>
+  </head>
+  <body>
+ 
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{% url 'main page' %}">Bookshelf Buddy</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <!-- Search bar -->
+            <li class="nav-item">
+                <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </li>
+        </ul>
+        
+        <ul class="navbar-nav ml-auto">
+            <!-- Links to user profiles -->
+            {% if user.is_authenticated %}
+             <li class="nav-item">
+                <a class="nav-link" href="{% url 'bookie profile' pk=user.pk %}">Your Profile</a>
+            </li>
+             <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout bookie' %}">Log out of your profile</a>
+            </li>     
+          
+            {% else %}
+               <li class="nav-item">
+                <a class="nav-link" href="{% url 'register bookie' %}">Create new profile</a>
+            </li>
+                
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'login bookie' %}">Log into your account</a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link" href="#">Categories</a>
+            </li>
+            
+            <!-- Link to the main page -->
+            <li class="nav-item">
+                <a class="nav-link" href="#">Main Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+  </body>
+<div class="content">
+{% block main_content %}
+{% endblock %}
+</div>
+
+<footer class="bg-dark text-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Footer Details</h3>
+                <details class="footer-details">
+                    <summary>Details 1</summary>
+                    <p>This is the content of details 1.</p>
+                </details>
+                <details class="footer-details">
+                    <summary>Details 2</summary>
+                    <p>This is the content of details 2.</p>
+                </details>
+                <details class="footer-details">
+                    <summary>Details 3</summary>
+                    <p>This is the content of details 3.</p>
+                </details>
+                <details class="footer-details">
+                    <summary>Details 4</summary>
+                    <p>This is the content of details 4.</p>
+                </details>
+                <details class="footer-details">
+                    <summary>Details 5</summary>
+                    <p>This is the content of details 5.</p>
+                </details>
+            </div>
+        </div>
+    </div>
+</footer>
