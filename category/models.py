@@ -22,12 +22,21 @@ class Category(models.Model):
         ]
     )
 
+    books = models.ManyToManyField(
+        'book.Book',
+        related_name='books_in_category',
+
+    )
+
     @property
     def get_age_restriction(self):
         if self.age_restriction:
-            return f" ({self.age_restriction})"
+            return f"Ar: ({self.age_restriction})"
         else:
             return ''
 
+    def get_book_count(self):
+        return self.book_set.count()
+
     def __str__(self):
-        return f"{self.name}{self.get_age_restriction}"
+        return f"{self.name} {self.get_age_restriction}Books: [{self.get_book_count()}]"

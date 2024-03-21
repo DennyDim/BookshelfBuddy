@@ -1,19 +1,38 @@
 {% extends "base.html" %}
-{% load static %}
-
+{% load crispy_forms_tags %}
 
 {% block main_content %}
-    <div class="content">
-        <div class="align-center">
-            <h1>Your Profile</h1>
-            <ul class="align-center content" type="none">
-                <img src="{% static user.profile_picture.url %}" alt="Profile Picture">
-                <li>{{ user.profile_picture }}</li>
-                <li>Username: {{ user.username }}</li>
-                <li>Email: {{ user.email }}</li>
-                <li>Age: {{ user.age}}</li>
-                <li>About me: {{ user.bio }}</li>
-            </ul>
-        </div>    
+    
+    <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/journal/bootstrap.min.css">
+    
+    <br>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1 class="text-center">{{ profile }}</h1>
+                <form method="post" autocomplete="off" action="{% url "edit bookie profile" pk=object.pk %}">
+                    
+                <ul type="none">
+                    <img src="{{ object.profile_picture.url }}" alt="Profile Picture">
+                    <li>{{ object.profile_picture }}</li>
+            
+                    <li>Username: {{ user.username }}</li>
+                    <li>Email: {{ user.email }}</li>
+            
+                    <li>Age: {{ user.age}}</li>
+                    <li>About me: {{ user.bio }}</li>
+                
+                    {% if object.pk == profile.pk %}
+                    <a href="{% url "edit bookie profile" pk=object.pk %}" class="button">Edit my profile</a>
+                    <a href="{% url "delete bookie profile" pk=object.pk %}" class="button">Delete my profile</a>
+                    {% endif %}
+                
+                    {% csrf_token %}
+                </ul>
+                    <input type="submit" class="btn btn-primary" value="Save Changes"/>
+                </form>
+            </div>
+        </div>
     </div>
+
 {% endblock %}

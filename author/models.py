@@ -24,6 +24,7 @@ class Author(models.Model):
     year_born = models.PositiveIntegerField(
         blank=False,
         null=False,
+        default=1_000,
         verbose_name="Author`s birth year",
         validators=[
             MinValueValidator(1000),
@@ -42,5 +43,8 @@ class Author(models.Model):
 
     )
 
-    def get_book_titles(self):
+    def get_book_titles(self) -> list:
         return [book.title for book in self.book_set.all()]
+
+    def __str__(self):
+        return self.name

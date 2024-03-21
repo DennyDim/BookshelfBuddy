@@ -17,16 +17,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from bookie import views as bookie_views
-
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', bookie_views.main_page, name='main page'),
 
+    path('', include('category.urls')),
     path('bookie/', include('bookie.urls')),
+
 ]
 
 if settings.DEBUG:

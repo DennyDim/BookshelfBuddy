@@ -1,12 +1,12 @@
 
 from django.contrib.auth import forms as auth_forms
 
-from django import forms
 
-from BookshelfBuddy import settings
+
+
 from bookie.models import Bookie, BookieProfile
 
-from bookie import validators
+
 
 
 class BookieRegistrationForm(auth_forms.UserCreationForm):
@@ -56,4 +56,5 @@ class LogInBookieForm(auth_forms.AuthenticationForm):
         self.fields['username'].widget.attrs["autofocus"] = True
 
         self.fields["password"].widget.attrs["placeholder"] = "Enter your password..."
+
 

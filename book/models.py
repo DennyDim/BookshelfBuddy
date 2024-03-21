@@ -13,7 +13,7 @@ class Book(models.Model):
     MIN_LEN_BOOK_DESCRIPTION = 100
 
     cover_image = models.ImageField(
-        upload_to="static/images",
+        upload_to="static/images/",
         default='static/images/no_cover.png',
     )
 

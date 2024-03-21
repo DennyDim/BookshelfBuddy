@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+
+
+
+
+<script>
+                        document.getElementById("logoutButton").addEventListener("click", function() {
+                
+                        fetch('{% url 'logout bookie' %}', {
+                        method: 'POST',
+                        headers: {
+                                'Content-Type': 'application/json',
+                                 },
+                        body: JSON.stringify({}),
+                        })
+                        .then(response => {
+                        if (response.ok) {
+                    
+                            window.location.href = '{% url 'main page' %}';
+                        } else {
+                    
+                        console.error('Couldn`t log you out');
+                        }
+                        })
+                        .catch(error => {
+                        console.error('Error:', error);
+                            });
+                        });
+                    </script>
+</body>
+</html>

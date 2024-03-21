@@ -31,8 +31,8 @@
         </ul>
         
         <ul class="navbar-nav ml-auto">
-            <!-- Links to user profiles -->
-            {% if user.is_authenticated %}
+           
+            {% if  user.is_authenticated %}
              <li class="nav-item">
                 <a class="nav-link" href="{% url 'bookie profile' pk=user.pk %}">Your Profile</a>
             </li>
@@ -55,7 +55,7 @@
             
             <!-- Link to the main page -->
             <li class="nav-item">
-                <a class="nav-link" href="#">Main Page</a>
+                <a class="nav-link" href="{% url 'main page' %}">Main Page</a>
             </li>
         </ul>
     </div>

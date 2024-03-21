@@ -39,7 +39,7 @@ class BookieProfile(models.Model):
 
     profile_picture = models.ImageField(
         default='static/images/no_profile_pic.png',
-        upload_to='static/images',
+        upload_to='static/images/',
         blank=True,
         null=True
     )
@@ -48,6 +48,18 @@ class BookieProfile(models.Model):
         blank=True,
         max_length=250,
         default="Tell something about yourself in 250 characters or less."
+    )
+
+    books_i_want_to_read = models.ManyToManyField(
+        "book.Book",
+        related_name="books_wanted_by_users",
+        blank=True,
+    )
+
+    books_ive_read = models.ManyToManyField(
+        "book.Book",
+        related_name="books_read_by_users",
+        blank=True,
     )
 
     def __str__(self):

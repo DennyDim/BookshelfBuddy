@@ -2,5 +2,21 @@
 
 
 {% block main_content %}
-    {{ text }}
+    <h1>This is the main page</h1>
+    
+    {% for category in categories %}
+        {% if category.get_book_count != 0%}
+            <h2>{{ category.name }}</h2>
+            <ul>
+            {% for book in category.book_set.all %}
+                <li>{{ book.title }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        
+    {% empty %}
+        <h1>No books added yet :(</h1>
+    {% endfor %}
+        
+    
 {% endblock %}
