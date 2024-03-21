@@ -46,5 +46,16 @@ class Author(models.Model):
     def get_book_titles(self) -> list:
         return [book.title for book in self.book_set.all()]
 
+    def get_book_categories(self):
+        all_categories = {}
+        for book in self.book_set.all():
+            for c in book.category.all():
+                if c not in all_categories:
+                    all_categories[c] = 0
+                all_categories[c] += 1
+
+        return sorted(all_categories, key=lambda x: all_categories.get(x), reverse=True)
+
+
     def __str__(self):
         return self.name

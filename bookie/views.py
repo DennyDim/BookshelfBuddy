@@ -34,7 +34,6 @@ class RegisterBookieView(CreateView):
     success_url = reverse_lazy("login bookie")
 
 
-
 class BookieLoginView(LoginView):
     template_name = "bookies/log_in.html"
     form_class = bookie_forms.LogInBookieForm
@@ -45,6 +44,7 @@ def logout_view(request):
     logout(request)
     login_url = reverse('login bookie')  # Get the URL for 'login bookie'
     return HttpResponse(f"You have been logged out successfully. <a href='{login_url}'>That's fine</a>")
+
 
 class ProfileDetailView(DetailView):
     model = BookieProfile

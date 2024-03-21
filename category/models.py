@@ -31,7 +31,7 @@ class Category(models.Model):
     @property
     def get_age_restriction(self):
         if self.age_restriction:
-            return f"Ar: ({self.age_restriction})"
+            return f"({self.age_restriction})"
         else:
             return ''
 
@@ -39,4 +39,4 @@ class Category(models.Model):
         return self.book_set.count()
 
     def __str__(self):
-        return f"{self.name} {self.get_age_restriction}Books: [{self.get_book_count()}]"
+        return f"{self.name}{self.get_age_restriction}\nBooks: {self.get_book_count()}"

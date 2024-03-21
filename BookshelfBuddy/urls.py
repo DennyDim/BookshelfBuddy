@@ -25,6 +25,7 @@ urlpatterns = [
 
     path('', include('category.urls')),
     path('bookie/', include('bookie.urls')),
+    path('', include('author.urls'))
 
 ]
 
