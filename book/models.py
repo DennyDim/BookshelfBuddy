@@ -14,7 +14,7 @@ class Book(models.Model):
 
     cover_image = models.ImageField(
         upload_to="static/images/",
-        default='static/images/no_cover.png',
+        default='static/images/book_cover_no_img.jpg',
     )
 
     title = models.CharField(
@@ -65,12 +65,19 @@ class Book(models.Model):
         editable=False,
         null=True,
     )
+    @property
+    def get_added_by(self):
+        if self.added_by is None:
+            return "Anonymous"
+        return self.added_by.username
 
     def __str__(self):
         return f"{self.title} by {self.author}"
 
     def save(self, *args, **kwargs):
-        if not self.added_by_id:
+        if not self.added_by:
             self.added_by = kwargs.pop('user', None)
 
         super(Book, self).save(*args, **kwargs)
+
+

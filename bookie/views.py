@@ -1,6 +1,6 @@
 from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView, LogoutView
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 from django.shortcuts import render, redirect
 
@@ -10,6 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, UpdateView, DeleteView, CreateView
 
+from bookie.forms import BookLibraryForm
 from bookie.models import Bookie, BookieProfile
 
 # Create your views here.
@@ -80,3 +81,24 @@ class ProfileDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         self.object.delete()
         user.delete()
         return redirect(success_url)
+
+def update_library(request):
+
+    if request.method == 'POST':
+        form = BookLibraryForm(request.POST)
+        if form.is_valid():
+            book_id = form.cleaned_data.get('book_id')
+
+            if 'want_to_read' in request.POST:
+                library = "want_to_read"
+
+            elif 'have_read' in request.POST:
+                library = "have_read"
+
+            user_profile = request.user.pk.bookirprofile
+            if library == "want_to_read":
+                user_profile.books_i_want_to_read.add(book_id)
+            elif library == "have_read":
+                user_profile.books_ive_read.add(book_id)
+
+            return JsonResponse({'message': 'Book successfully added'})

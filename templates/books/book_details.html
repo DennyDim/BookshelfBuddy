@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block main_content %}
+    
+    <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/journal/bootstrap.min.css">
+    
+    <br>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1 class="text-center">{{ book.title}}</h1>
+                <form method="get" action="{% url "book_detail" pk=object.pk %}">
+                    
+                    <img src="{{ book.cover_image}}" alt="Cover Image">
+                <br>
+                    {{ book.cover_image }}
+                    
+                    <ul type="none">
+                        
+                        <li class="align-left descname"><h4 class="data-decor">By: {{ book.author }}</h4></li>
+               
+                        <li><h4>Published in: {{ book.year_published }}</h4></li>
+                        <li><h4>
+                            {% if book.category.all|length == 1 %}
+                            Category: {{ book.category.name }}
+                            {% else %}
+                            Categories:
+                                {% for category in book.category.all %}
+                                {{ category.name }}
+                                    {% if not forloop.last %}
+                                        / 
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </h4>
+                        </li>
+                        <li class="description"><h4>Summary: {{ book.description }}</h4></li>
+                        <li><h6 class="grey">Added by: {{ book.get_added_by }}</h6></li>
+                        
+                    </ul>
+                    
+                </form>
+            
+            <form method="post">
+                <input type="checkbox" id="want_to_read" class="action-checkbox">
+                <label for="want_to_read"><h5>I want to read the book</h5></label>
+            
+            <br>
+                <h6 class="grey">This will add the book to your "Wishlist".</h6>
+                <br>
+                <input type="checkbox" id="have_read" class="vCheckboxLabel">
+                <label for="have_read"><h5>I have already read this book</h5></label>
+            
+            <br>
+            
+                <h6 class="grey">This will add the book to your "Library."</h6>
+            
+            <script>
+              $(document).ready(function(){
+                $('input[type=checkbox]').change(function(){
+                     $('#libraryForm').submit();
+                });
+              });
+            </script>
+            </form>
+
+        
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

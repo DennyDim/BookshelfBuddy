@@ -22,3 +22,73 @@
     </div>
 
 {% endblock %}
+
+
+
+
+# views.py
+
+from django.shortcuts import render
+from django.http import JsonResponse
+from .models import BookieProfile
+from .forms import BookLibraryForm
+
+def update_library(request):
+    if request.method == 'POST':
+        form = BookLibraryForm(request.POST)
+        if form.is_valid():
+            book_id = form.cleaned_data['book_id']
+            library_type = form.cleaned_data['library_type']
+            user_profile = request.user.bookieprofile
+
+            if library_type == 'want_to_read':
+                user_profile.books_i_want_to_read.add(book_id)
+            elif library_type == 'have_read':
+                user_profile.books_ive_read.add(book_id)
+
+            return JsonResponse({'message': 'Book added to library successfully'})
+        else:
+            return JsonResponse({'error': 'Invalid form data'}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+# models.py
+
+from django.db.models.signals import m2m_changed
+from django.dispatch import receiver
+
+class BookieProfile(models.Model):
+    # Your existing fields
+
+# Define a signal receiver function to update libraries when books are added or removed
+
+
+
+// Assume you have checkboxes with ids "wantToReadCheckbox" and "haveReadCheckbox"
+
+document.getElementById("wantToReadCheckbox").addEventListener("change", function() {
+    if (this.checked) {
+        addToLibrary("want_to_read");
+    } else {
+        removeFromLibrary("want_to_read");
+    }
+});
+
+document.getElementById("haveReadCheckbox").addEventListener("change", function() {
+    if (this.checked) {
+        addToLibrary("have_read");
+    } else {
+        removeFromLibrary("have_read");
+    }
+});
+
+function addToLibrary(libraryType) {
+    // Make AJAX request to Django view to add book to library
+    // Send book ID or other necessary data along with the request
+}
+
+function removeFromLibrary(libraryType) {
+    // Make AJAX request to Django view to remove book from library
+    // Send book ID or other necessary data along with the request
+}

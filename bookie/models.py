@@ -38,7 +38,7 @@ class BookieProfile(models.Model):
     )
 
     profile_picture = models.ImageField(
-        default='static/images/no_profile_pic.png',
+        default='static/images/no_profile_pic.jpg',
         upload_to='static/images/',
         blank=True,
         null=True
