@@ -32,6 +32,11 @@ class Author(models.Model):
         ]
     )
 
+    author_picture = models.ImageField(
+        upload_to="images/",
+        default='images/no_profile_pic.jpg',
+    )
+
     authors_bio = models.TextField(
         max_length=1_000,
         blank=False,

@@ -1,4 +1,5 @@
 {% load crispy_forms_tags %}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,9 +8,9 @@
       
       {# TODO: Insert logo image #}
     <div class="title">
-    <title>Bookshelf Buddy</title>
-      <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/journal/bootstrap.min.css">
-        </div>
+        <title>Bookshelf Buddy</title>
+        <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/journal/bootstrap.min.css">
+    </div>
   </head>
   <body>
  
@@ -52,11 +53,22 @@
             <li class="nav-item">
                 <a class="nav-link" href="#">Categories</a>
             </li>
+        
+      
             
             <!-- Link to the main page -->
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'all_writers' %}">Authors Statistics</a>
             </li>
+        
+          {#  BUTTONS ONLY AVAILABLE TO STAFF MEMBERS #}
+            {% if request.user.is_staff %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'add book' %}">Add Book
+                        <img src="{% static 'images/add_button.png' %}" width="20px" alt="Some Image" class="nav-item">
+                    </a>
+                </li>
+            {% endif %}
         </ul>
     </div>
 </nav>

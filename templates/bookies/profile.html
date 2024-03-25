@@ -3,6 +3,7 @@
 
 {% block main_content %}
     
+    
     <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/journal/bootstrap.min.css">
     
     <br>
@@ -13,23 +14,30 @@
                 <form method="post" autocomplete="off" action="{% url "bookie profile" pk=object.pk %}">
                     
                 <ul type="none">
-                    <img src="{{ object.profile_picture.url }}" alt="Profile Picture">
-                    <li>{{ object.profile_picture }}</li>
+                    <img src='{{ object.profile_picture.url }}' alt="Profile Picture" style="width: 200px">
             
-                    <li>Username: {{ user.username }}</li>
-                    <li>Email: {{ user.email }}</li>
+                    <li>Username: {{ object.user.username }}</li>
+                    <li>Email: {{ object.profile.email}}</li>
             
-                    <li>Age: {{ user.age}}</li>
-                    <li>About me: {{ user.bio }}</li>
+                    <li>Age: {{ object.user.age }}</li>
+                    <li>About me: {{ object.profile.bio }}</li>
                 
-                    {% if object.pk == profile.pk %}
-                    <a href="{% url "edit bookie profile" pk=object.pk %}" class="button">Edit my profile</a>
-                    <a href="{% url "delete bookie profile" pk=object.pk %}" class="button">Delete my profile</a>
-                    {% endif %}
+                    {# CRUD OPERATIONS FOR SUPERUSERS AND OWNERS OF THE PROFILE #}
+                    {% if request.user.is_superuser or request.user == profile.user %}
+                        <a class="btn btn-primary container row justify-content-center" 
+                           href="{% url 'edit bookie profile' pk=object.pk %}">Edit My Profile</a>
+
+                    <form method="post" action="{% url 'delete bookie profile' pk=object.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" onclick="return confirmProfileDelete();"
+                    class="btn container row">Delete My Profile</button>
+                    </form>
+
+                {% endif %}
                 
                     {% csrf_token %}
                 </ul>
-                    <input type="submit" class="btn btn-primary" value="Save Changes"/>
+                    
                 </form>
             </div>
         </div>
@@ -52,5 +60,10 @@
             {% endfor %}
     
     </div>
+    <script>
+    function confirmProfileDelete(){
+        return (confirm("This will delete all your data!"))
+    }
+    </script>
 
 {% endblock %}

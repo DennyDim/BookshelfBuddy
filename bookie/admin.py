@@ -13,8 +13,10 @@ from category import models as category_models
 admin.site.register(book_models.Book)
 admin.site.register(author_models.Author)
 
-admin.site.register(bookie_models.BookieProfile)
-admin.site.register(bookie_models.Bookie)
+
+admin.site.register(bookie_models.Bookie, bookie_models.BookieAdmin)
+admin.site.register(bookie_models.BookieProfile, bookie_models.BookieProfileAdmin)
+
 admin.site.register(comment_models.Comment)
 
 admin.site.register(category_models.Category)

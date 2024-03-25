@@ -9,12 +9,17 @@ import datetime
 
 class Book(models.Model):
 
+    DEFAULT_BOOK_COVER = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPa8pabMznsqT-GWDJccgg3uLBcnSwOpIXrA&usqp=CAU"
+
     CURRENT_YEAR = datetime.date.today().year
     MIN_LEN_BOOK_DESCRIPTION = 100
 
-    cover_image = models.ImageField(
-        upload_to="static/images/",
-        default='static/images/book_cover_no_img.jpg',
+    MIN_YEAR_ADDED_VALUE = 1000
+    SUPER_USER_EMAIL = 'denny@gmail.com'
+
+    cover_image = models.URLField(
+        default=DEFAULT_BOOK_COVER,
+        blank=True,
     )
 
     title = models.CharField(
@@ -35,18 +40,23 @@ class Book(models.Model):
         blank=False,
         null=False,
         default=CURRENT_YEAR,
+        help_text= f"If the book you are trying to add was published before {MIN_YEAR_ADDED_VALUE},\n"
+                   f"please contact the administrator at {SUPER_USER_EMAIL}.",
+
         validators=[
-            MinValueValidator(1000),
+            MinValueValidator(MIN_YEAR_ADDED_VALUE),
             MaxValueValidator(CURRENT_YEAR)
         ]
+
     )
 
     # add category and cover image
 
-    category = models.ManyToManyField(
+    categories = models.ManyToManyField(
         'category.Category',
         blank=False,
-        default="Not set yet"
+        help_text=f"If you can`t find the category you need,\n"
+                 f"please contact the administrator at {SUPER_USER_EMAIL}."
     )
 
     description = models.TextField(
@@ -65,11 +75,6 @@ class Book(models.Model):
         editable=False,
         null=True,
     )
-    @property
-    def get_added_by(self):
-        if self.added_by is None:
-            return "Anonymous"
-        return self.added_by.username
 
     def __str__(self):
         return f"{self.title} by {self.author}"

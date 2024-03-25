@@ -56,9 +56,11 @@ def main_page(request):
         user_age = request.user.age
 
     filtered_categories = get_filtered_categories(user_age)
+    total_books = Book.objects.all().count()
 
     context = {
         "categories": filtered_categories,
+        'total_books': total_books,
     }
 
     return render(request, "main_page.html", context)

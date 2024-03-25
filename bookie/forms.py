@@ -6,7 +6,6 @@ from django import forms
 from bookie.models import Bookie, BookieProfile
 
 
-
 class BookieRegistrationForm(auth_forms.UserCreationForm):
 
     class Meta:
@@ -56,8 +55,10 @@ class LogInBookieForm(auth_forms.AuthenticationForm):
         self.fields["password"].widget.attrs["placeholder"] = "Enter your password..."
 
 
+class BookieProfileForm(forms.ModelForm):
+    class Meta:
+        model = BookieProfile
+        fields = ['profile_picture', 'email', 'bio']
 
-class BookLibraryForm(forms.Form):
-    book_id = forms.IntegerField()
-    library_type = forms.ChoiceField(choices=(('want_to_read', 'Want to Read'), ('have_read', 'Have Read')))
+
 

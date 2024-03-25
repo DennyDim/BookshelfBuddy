@@ -4,19 +4,22 @@
 {% block main_content %}
     <h1>This is the main page</h1>
     
-    {% for category in categories %}
-        {% if category.get_book_count != 0%}
-            <h2>{{ category.name }}</h2>
-            <ul>
-            {% for book in category.book_set.all %}
-                <li><a href="{% url 'book_detail' pk=book.pk%}">{{ book }}</a></li>
-            {% endfor %}
-            </ul>
+    {% if total_books == 0 %}
+    <h1 class="row justify-content-center">No books added yet :(</h1>
+    
+    {% else %}
+    
+        {% for category in categories %}
+            {% if category.get_book_count != 0%}
+                <h2>{{ category.name }}</h2>
+                <ul>
+                    {% for book in category.book_set.all %}
+                        <li><a href="{% url 'book details' pk=book.pk%}">{{ book }}</a></li>
+                    {% endfor %}
+                </ul>
         {% endif %}
-        
-    {% empty %}
-        <h1>No books added yet :(</h1>
     {% endfor %}
-        
+    {% endif %}
+    
     
 {% endblock %}

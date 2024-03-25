@@ -3,8 +3,10 @@
 {% block main_content %}
         <form action="{% url 'delete bookie profile' pk=bookieprofile.pk%}" method="post">
         <h1>You are about to delete all information about you. Proceed?</h1>
+        {% csrf_token %}
+        <input type="submit"  class="btn btn-primary" value="Agree">
         </form>
-    {% csrf_token %}
         
-    <input type="submit"  class="btn btn-primary" value="Agree">
+        
+    
 {% endblock %}
