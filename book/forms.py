@@ -1,10 +1,9 @@
 
 from django import forms
 
-from book.models import Book
-from category.models import Category
 
-from book.models import Book
+
+from book.models import Book, Category
 
 
 class BookForm(forms.ModelForm):

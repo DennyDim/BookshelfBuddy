@@ -92,3 +92,10 @@ function removeFromLibrary(libraryType) {
     // Make AJAX request to Django view to remove book from library
     // Send book ID or other necessary data along with the request
 }
+
+<form method="post">
+                {% csrf_token %}
+                    <input type="checkbox" name="want_to_read" value="1"> Want to Read<br>
+                    <input type="checkbox" name="have_read" value="1"> Have Read<br>
+                    <button type="submit">Save</button>
+                </form>

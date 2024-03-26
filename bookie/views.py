@@ -58,14 +58,17 @@ class ProfileDetailView(DetailView):
     template_name = 'bookies/profile.html'
     context_object_name = 'profile'
 
-
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile'] = self.request.user.profile
+        context['user'] = self.request.user
+        return context
 
 
 class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = BookieProfile
     form_model = BookieProfileForm
-    fields = ['profile_picture', 'email', 'bio',]
+    fields = ['profile_picture', 'email', 'bio', 'want_to_read']
     template_name = 'bookies/edit_profile.html'
     success_url = reverse_lazy('bookie profile')
 

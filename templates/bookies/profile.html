@@ -43,23 +43,33 @@
         </div>
     </div>
     
-    <div class="select2-dropdown--above">
-        <h5>Wishlist</h5>
-        <select id="books"></select>
-            {% for book in profile.books_i_want_to_read.all %}
-            <option value="{{ book }}">{{ book }}</option>
+    {% if user.is_authenticated %}
+    
+        <h5>Books I want to  read:</h5>
+    <ul type="none">
+            {% for book in object.want_to_read.all %}
+                <li><a href="{% url 'book details' pk=book.pk %}">
+                    {{ book }}
+                </a></li>
+                
+            {% empty %}
+                <h6>No books added yet.</h6>
+            
             {% endfor %}
+    </ul>
+     <h5>Books I`ve read</h5>
+        {% for book in object.have_read %}
+            <li><a href="{% url 'book details' pk=book.pk %}">
+                {{ book }}
+            </a></li>
+            
+        {% empty %}
+            <h6>No books added yet</h6>
+        {% endfor %}
     
-    </div>
+    {% endif %}
     
-    <div class="select2-dropdown--above">
-        <h5>My Library</h5>
-        <select id="books"></select>
-            {% for book in profile.books_ive_read.all %}
-            <option value="{{ book.title }}">{{ book.title }}</option>
-            {% endfor %}
     
-    </div>
     <script>
     function confirmProfileDelete(){
         return (confirm("This will delete all your data!"))

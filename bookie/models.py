@@ -40,6 +40,7 @@ class BookieProfile(models.Model):
         Bookie,
         on_delete=models.CASCADE,
         primary_key=True,
+        related_name="profile"
     )
 
     email = models.EmailField(blank=True, null=True)
@@ -55,18 +56,18 @@ class BookieProfile(models.Model):
         default="Share something about yourself in 250 characters or less."
     )
 
-    books_i_want_to_read = models.ManyToManyField(
-        "book.Book",
-        related_name="books_wanted_by_users",
+    want_to_read = models.ManyToManyField(
+        'book.Book',
         blank=True,
-        default='No books added yet'
+        default=None,
+        related_name='want_to_read',
     )
 
-    books_ive_read = models.ManyToManyField(
-        "book.Book",
-        related_name="books_read_by_users",
+    have_read = models.ManyToManyField(
+        'book.Book',
         blank=True,
-        default='No books read yet',
+        default=None,
+        related_name="have_read"
     )
 
     def __str__(self):
@@ -77,13 +78,5 @@ class BookieProfile(models.Model):
         super(BookieProfile, self).save(*args, **kwargs)
 
 
-class BookieProfileAdmin(admin.ModelAdmin):
-    def delete_model(self, request, obj):
-        if request.user.is_superuser or obj == request.user:
-            obj.user.delete()
-            obj.delete()
-        else:
-            raise ValidationError("You do not have permission to delete this profile!")
 
-class BookieAdmin(admin.ModelAdmin):
-    pass
+

@@ -2,10 +2,9 @@
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
+import bookie.models
 from bookie.models import BookieProfile, Bookie
-
 from django.db.models.signals import m2m_changed
-
 
 
 
@@ -24,16 +23,3 @@ def delete_the_associated_user(sender, instance, **kwargs):
     except Bookie.DoesNotExist:
         pass
 
-
-@receiver(m2m_changed, sender=BookieProfile.books_i_want_to_read.through)
-def update_want_to_read_library(sender, instance, action, **kwargs):
-    if action == 'post_add':
-        library = sender.bookieprofile.books_i_want_to_read.all()
-        library.append(instance)
-
-
-@receiver(m2m_changed, sender=BookieProfile.books_ive_read.through)
-def update_have_read_library(sender, instance, action, **kwargs):
-    if action == 'post_add':
-        library = sender.bookieprofile.books_ive_read.all()
-        library.append(instance)

@@ -1,13 +1,17 @@
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
+from django.views.generic.base import View
 from django.views.generic import DetailView, UpdateView, CreateView, DeleteView
 
 from book.models import Book
 
 from book.forms import BookForm
+
+from bookie.models import BookieProfile
+from django.http import JsonResponse
 
 
 class BookDetailView(DetailView):
@@ -15,6 +19,27 @@ class BookDetailView(DetailView):
     form_class = BookForm
     template_name = 'books/book_details.html'
     context_object_name = 'book'
+
+
+class AddBookToWishlistView(View):
+    def post(self, request, *args, **kwargs):
+        book_id = request.POST.get('book_id')
+        user_profile = BookieProfile.objects.get(user=request.user)
+        book = Book.objects.get(id=book_id)
+        user_profile.want_to_read.add(book)
+
+        return redirect('book details', pk=book_id)
+
+
+class AddBookToAlreadyReadView(View):
+
+    def post(self, request, *args, **kwargs):
+        book_id = request.POST.get('book_id')
+        user_profile = BookieProfile.objects.get(user=request.user)
+        book = Book.objects.get(id=book_id)
+        user_profile.have_read.add(book)
+
+        return redirect('book details', pk=book_id)
 
 
 class AddBookView(UserPassesTestMixin, CreateView):
@@ -26,17 +51,6 @@ class AddBookView(UserPassesTestMixin, CreateView):
 
     def test_func(self):
         return self.request.user.is_staff
-
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        form.instance.added_by = self.request.user
-        self.object.save()
-        form.save_m2m()
-
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return self.success_url
 
 
 class BookUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+
     'bookie',
     'book',
     'category',
@@ -94,7 +95,7 @@ WSGI_APPLICATION = 'BookshelfBuddy.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bookshelfbuddydb',
+        'NAME': 'booksdb',
         'USER': 'denny',
         'PASSWORD': 'denny'
     }
