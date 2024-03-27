@@ -11,7 +11,7 @@ from book.models import Book
 from book.forms import BookForm
 
 from bookie.models import BookieProfile
-from django.http import JsonResponse
+
 
 
 class BookDetailView(DetailView):
@@ -28,6 +28,7 @@ class AddBookToWishlistView(View):
         book = Book.objects.get(id=book_id)
         user_profile.want_to_read.add(book)
 
+
         return redirect('book details', pk=book_id)
 
 
@@ -38,6 +39,9 @@ class AddBookToAlreadyReadView(View):
         user_profile = BookieProfile.objects.get(user=request.user)
         book = Book.objects.get(id=book_id)
         user_profile.have_read.add(book)
+
+        if book in user_profile.want_to_read.all():
+            user_profile.want_to_read.remove(book)
 
         return redirect('book details', pk=book_id)
 

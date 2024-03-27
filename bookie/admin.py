@@ -19,4 +19,4 @@ admin.site.register(bookie_models.BookieProfile)
 
 admin.site.register(comment_models.Comment)
 
-admin.site.register(book_models.Category)
+admin.site.register(category_models.Category)

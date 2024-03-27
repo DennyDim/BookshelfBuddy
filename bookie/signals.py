@@ -7,12 +7,10 @@ from bookie.models import BookieProfile, Bookie
 from django.db.models.signals import m2m_changed
 
 
-
 @receiver(post_save, sender=Bookie)
 def create_profile(sender, instance, created, **kwargs):
     if created:
         BookieProfile.objects.create(user=instance)
-        instance.bookieprofile.save()
 
 
 @receiver(post_delete, sender=BookieProfile)

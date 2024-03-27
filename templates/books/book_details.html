@@ -48,23 +48,29 @@
             
             {# FIELDS FOR AUTHENTICATED USERS #}
             
-            {% if request.user.is_authenticated %}
+            {% if request.user.is_authenticated  %}
+        
+                {% if book not in request.user.profile.want_to_read.all and book not in request.user.profile.have_read.all%}
+                    
                 <form action="{% url 'add to wishlist' %}" method="post">
                 {% csrf_token %}
-                    
                 <input type="hidden" name="book_id" value="{{ book.pk }}">
                 <button class="btn btn-primary" type="submit">
                     I want to read this book</button>
                 </form>
-                
+                {% endif %}
+            
+                {% if book not in request.user.profile.have_read.all %}
+                    
                 <form action="{% url 'add to already read' %}" method="post">
                 {% csrf_token %}
                     
                 <input type="hidden" name="book_id" value="{{ book.pk }}">
-                <button class="btn-primary" type="submit">
+                <button class="btn" type="submit">
                     I have read this book</button>
             
                 </form>
+                {% endif %}
                            
             {% endif %}
            

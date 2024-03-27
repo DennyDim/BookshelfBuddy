@@ -1,7 +1,9 @@
 from django.shortcuts import render
 
 
-from book.models import Book, Category
+from book.models import Book
+
+from category.models import Category
 
 
 # Here I filter the books and only get the appropriate books

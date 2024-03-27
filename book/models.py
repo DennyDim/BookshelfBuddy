@@ -1,8 +1,10 @@
-from django.conf import settings
+
 from django.core.validators import MinLengthValidator, MinValueValidator, MaxValueValidator
 from django.db import models
 
 import datetime
+
+from django.contrib.auth import models as auth_models
 
 # Create your models here.
 
@@ -53,7 +55,7 @@ class Book(models.Model):
     # add category and cover image
 
     categories = models.ManyToManyField(
-        'book.Category',
+        'category.Category',
         blank=False,
         help_text=f"If you can`t find the category you need,\n"
                  f"please contact the administrator at {SUPER_USER_EMAIL}."
@@ -70,7 +72,7 @@ class Book(models.Model):
     )
 
     added_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        'bookie.Bookie',
         on_delete=models.SET_NULL,
         editable=False,
         null=True,
@@ -91,40 +93,12 @@ class Book(models.Model):
 
 
 
-class Category(models.Model):
 
-    name = models.CharField(
-        max_length=100,
-        unique=True,
-        null=False,
-        blank=False,
-    )
 
-    age_restriction = models.PositiveIntegerField(
-        null=True,
-        blank=True,
-        default=None,
-        validators=[
-            MaxValueValidator(50),
-        ]
-    )
 
-    books = models.ManyToManyField(
-        Book,
-        related_name='books_in_category',
 
-    )
 
-    @property
-    def get_age_restriction(self):
-        if self.age_restriction:
-            return f"({self.age_restriction})"
-        else:
-            return ''
 
-    def get_book_count(self):
-        return self.book_set.count()
 
-    def __str__(self):
-        return f"{self.name}{self.get_age_restriction}\nBooks: {self.get_book_count()}"
+
 

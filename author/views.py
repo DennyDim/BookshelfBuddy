@@ -4,7 +4,7 @@ from category import views as category_views
 
 from django.views.generic import ListView, DetailView
 
-from .models import Author
+from author.models import Author
 
 
 class AuthorsListView(ListView):

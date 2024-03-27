@@ -1,9 +1,11 @@
+
 from django.core.validators import MinValueValidator, MaxValueValidator, MinLengthValidator
 from django.db import models
 
 import datetime
 
 # Create your models here.
+
 
 
 class Author(models.Model):
@@ -60,7 +62,6 @@ class Author(models.Model):
                 all_categories[c] += 1
 
         return sorted(all_categories, key=lambda x: all_categories.get(x), reverse=True)
-
 
     def __str__(self):
         return self.name

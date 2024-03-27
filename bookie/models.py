@@ -1,8 +1,6 @@
-from django.core import validators
-from django.core.exceptions import ValidationError
+
 from django.db import models
 
-from django.contrib import admin
 
 from django.contrib.auth import models as auth_models
 
@@ -37,7 +35,7 @@ class BookieProfile(models.Model):
     #   from here we get username, age and email
 
     user = models.OneToOneField(
-        Bookie,
+        'bookie.Bookie',
         on_delete=models.CASCADE,
         primary_key=True,
         related_name="profile"
@@ -55,7 +53,6 @@ class BookieProfile(models.Model):
         max_length=250,
         default="Share something about yourself in 250 characters or less."
     )
-
     want_to_read = models.ManyToManyField(
         'book.Book',
         blank=True,
