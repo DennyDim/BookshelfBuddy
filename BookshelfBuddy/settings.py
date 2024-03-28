@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'category',
     'comment',
     'author',
+    'reviews',
 
     'crispy_forms',
     'crispy_bootstrap5',

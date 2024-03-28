@@ -11,6 +11,7 @@ from book.models import Book
 from book.forms import BookForm
 
 from bookie.models import BookieProfile
+from reviews.models import ReviewAndRating
 
 
 
@@ -20,6 +21,16 @@ class BookDetailView(DetailView):
     template_name = 'books/book_details.html'
     context_object_name = 'book'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        current_book = self.get_object()
+        current_user = self.request.user
+        current_review = ReviewAndRating(book=current_book, user=current_user)
+        context['book'] = self.get_object()
+        context['current_user'] = current_user
+        context['current_review'] = current_review
+        return context
+
 
 class AddBookToWishlistView(View):
     def post(self, request, *args, **kwargs):
@@ -27,7 +38,6 @@ class AddBookToWishlistView(View):
         user_profile = BookieProfile.objects.get(user=request.user)
         book = Book.objects.get(id=book_id)
         user_profile.want_to_read.add(book)
-
 
         return redirect('book details', pk=book_id)
 

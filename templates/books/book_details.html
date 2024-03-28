@@ -41,6 +41,8 @@
                         <li><h6 class="grey">Added by: {% if not book.added_by %}Anonymous
                         {% else %}<a href="{% url 'bookie profile' pk=book.added_by.pk %}">{{ book.added_by }}</a>
                         {% endif %}</h6></li>
+
+                        <h4 class="containerr">Overall rating: {{ book.overall_rating|floatformat:1 }}</h4>
                         
                     </ul>                
                 
@@ -73,7 +75,59 @@
                 {% endif %}
                            
             {% endif %}
-           
+            {# Review Option #}
+            {% if current_user.is_authenticated and current_review.has_voted == False %}
+            
+                <form action="{% url 'submit review' book_id=book.pk%}" method="post">
+                {% csrf_token %}
+                <h5>Rate the book:</h5>
+                    <div class="rate">
+                        <input type="radio" name='rating' id="rating10" value="10">
+                        <label for="rating10" title="One of my favourite books!"></label>
+
+                        <input type="radio" name='rating' id="rating9" value="9">
+                        <label for="rating9" class="half" title="I hope Netflix doesn`t make an adaptation."></label>
+
+                        <input type="radio" name='rating' id="rating8" value="8">
+                        <label for="rating8" title="Highly engaging."></label>
+
+                        <input type="radio" name='rating' id="rating7" value="7">
+                        <label for="rating7" title="Worth a read!" class="half"></label>
+
+                        <input type="radio" name='rating' id="rating6" value="6">
+                        <label for="rating6" title="Good read."></label>
+
+                        <input type="radio" name='rating' id="rating5" value="5">
+                        <label for="rating5" title="It was okay." class="half"></label>
+
+                        <input type="radio" name='rating' id="rating4" value="4">
+                        <label for="rating4" title="Expected a bit more."></label>
+
+                        <input type="radio" name='rating' id="rating3" value="3">
+                        <label for="rating3" title="Not my cup of tea" class="half"></label>
+
+                        <input type="radio" name='rating' id="rating2" value="2">
+                        <label for="rating2" title="Netflix would have done better."></label>
+
+                        <input type="radio" name='rating' id="rating1" value="1">
+                        <label for="rating1" title="Disappointing!" class="half"></label>
+
+                    </div>
+
+                <h5>Share your opinion on this  book.</h5>
+                <div>
+                    <textarea name="review" rows="4" class="form-control"></textarea>
+                    <input type="submit" value="Submit" class="btn btn-primary">
+
+
+                </div>
+
+                </form>
+
+            {% endif %}
+                {% if current_review.has_voted %}
+            <h3>You have already voted</h3>
+           {% endif %}
             
             {# CRUD OPERATIONS ONLY FOR SUPERUSER AND THE ONE, WHO ADDED THE BOOK #}
                 <br>
@@ -88,11 +142,17 @@
                     </form>
 
                 {% endif %}
-
+            
 
             </div>
         </div>
     </div>
+    
+    has_voted: {{ current_review.has_voted }}
+    user: {{ current_review.user}}
+    book: {{ current_review.book }}
+    review: {{ current_review.review }}
+    rating: {{ current_review.rating }}
 
     <script>
     function confirmDelete(){

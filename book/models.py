@@ -91,6 +91,14 @@ class Book(models.Model):
     def __str__(self):
         return f"{self.title} by {self.author}"
 
+    @property
+    def overall_rating(self):
+        total_reviews = self.book_reviews.all()
+        if total_reviews:
+            total_rating = sum(rat.rating for rat in total_reviews)
+            return total_rating/len(total_reviews)
+        return 0
+
 
 
 
