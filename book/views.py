@@ -1,6 +1,7 @@
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import AnonymousUser
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic.base import View
@@ -10,7 +11,7 @@ from book.models import Book
 
 from book.forms import BookForm
 
-from bookie.models import BookieProfile
+from bookie.models import BookieProfile, Bookie
 from reviews.models import ReviewAndRating
 
 
@@ -25,7 +26,17 @@ class BookDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         current_book = self.get_object()
         current_user = self.request.user
-        current_review = ReviewAndRating(book=current_book, user=current_user)
+
+        if isinstance(current_user, AnonymousUser):
+            current_review = None
+
+        else:
+            try:
+                current_review = ReviewAndRating.objects.get(book=current_book, user=current_user)
+
+            except ReviewAndRating.DoesNotExist:
+                current_review = None
+
         context['book'] = self.get_object()
         context['current_user'] = current_user
         context['current_review'] = current_review

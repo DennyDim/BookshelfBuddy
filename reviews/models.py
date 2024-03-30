@@ -25,7 +25,8 @@ class ReviewAndRating(models.Model):
         blank=True
     )
 
-    rating = models.FloatField()
+    rating = models.FloatField(
+    )
 
     has_voted = models.BooleanField(
         default=False,

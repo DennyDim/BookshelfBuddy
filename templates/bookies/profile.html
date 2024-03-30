@@ -42,48 +42,10 @@
             </div>
         </div>
     </div>
-    <div class="">
-    {% if user.is_authenticated %}
-    
-        <h5>Books I want to read:</h5>
-                <ul type="none">
-                    {% for book in object.want_to_read.all %}
-                        <li><a href="{% url 'book details' pk=book.pk %}">
-                            {{ book }}
-                        </a></li>
-                
-                    {% empty %}
-                        <h6>No books added yet.</h6>
-                </ul>
-                    {% endfor %}
-    {% endif %}
-    <br>
+
     {% if user.is_authenticated %}
 
-        <h5>Books I`ve read:</h5>
-                <ul type="none">
-                    {% for book in object.have_read.all %}
-                        <li><a href="{% url 'book details' pk=book.pk %}">
-                            {{ book }}
-                        </a></li>
-
-                    {% empty %}
-                        <h6>No books added yet.</h6>
-                    </ul>
-                    {% endfor %}
-    {% endif %}
-    </div>
-    
-    <script>
-    function confirmProfileDelete(){
-        return (confirm("This will delete all your data!"))
-    }
-    </script>
-
-
-    </head>
-    {% if user.is_authenticated %}
-
+    {# only authenticated users have the following Libraries: #}
     <div class="container">
         <div class="row">
             <div class="col">
@@ -110,12 +72,22 @@
             </li>
             {% empty %}
             <li class="list-group-item">No books added yet.</li>
-            
+
             {% endfor %}
         </ul>
       </div>
     </div>
   </div>
     {% endif %}
+    
+    <script>
+    function confirmProfileDelete(){
+        return (confirm("This will delete all your data!"))
+    }
+    </script>
+
+
+    </head>
+
 
 {% endblock %}
