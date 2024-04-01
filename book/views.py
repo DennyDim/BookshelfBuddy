@@ -1,5 +1,4 @@
-
-
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import AnonymousUser
 from django.shortcuts import render, redirect, get_object_or_404
@@ -91,6 +90,8 @@ class BookUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('book details', kwargs={'pk': self.object.pk})
+
+
 
 
 class BookDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

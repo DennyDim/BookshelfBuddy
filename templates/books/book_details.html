@@ -1,10 +1,16 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
+{% load static %}
+
 
 {% block main_content %}
+
     
     <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/journal/bootstrap.min.css">
+
+
+
     
     <br>
     <div class="container">
@@ -13,9 +19,13 @@
                 <h1 class="text-center">{{ book.title}}</h1>
 
                 {% csrf_token %}
-                <form method="get" action="{% url "book details" pk=book.pk %}">
+                <form method="get" action="{% url "book details" pk=book.pk %}" enctype="multipart/form-data">
                     
-                    <img src="{{ book.cover_image }}" alt="Cover Image">
+                    <img src="{{ book.cover_image.url }}" alt="Cover Image" style="width: 300px">
+
+                <p>
+                    Url: {{ book.cover_image }}
+                </p>
                 <br>
              
                     <ul type="none">

@@ -7,17 +7,17 @@ from book.models import Book
 
 class BookForm(forms.ModelForm):
 
-
     class Meta:
         model = Book
-        fields = ['title', 'author', 'categories', 'year_published','cover_image', 'description']
+        fields = ['title', 'author', 'categories', 'year_published', 'cover_image', 'description']
 
         widgets = {
             'title': forms.TextInput(
                 attrs={'placeholder': 'Enter book title...'},
             ),
             'categories': forms.CheckboxSelectMultiple(),
-            }
+        }
+
 
         error_messages = {
             'title':
@@ -28,4 +28,3 @@ class BookForm(forms.ModelForm):
             'author': 'If you can`t find the author of this book,\n'
                       ' please create it first then add the book.'
         }
-

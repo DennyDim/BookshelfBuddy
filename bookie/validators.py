@@ -37,6 +37,3 @@ class CustomNumberValidator(BaseValidator):
                 code='not_enough_numbers',
                 params={'min_length': self.min_len_numbers},
             )
-
-    def get_help_message(self):
-        return f"~ Your password must contain at least {self.min_len_numbers} digits."

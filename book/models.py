@@ -1,3 +1,4 @@
+import os
 
 from django.core.validators import MinLengthValidator, MinValueValidator, MaxValueValidator
 from django.db import models
@@ -6,12 +7,18 @@ import datetime
 
 from django.contrib.auth import models as auth_models
 
+
 # Create your models here.
+def custom_upload_to(instance, filename):
+    base_filenmae, file_extension = os.path.splitext(filename)
+
+    unique_filename = f"{base_filenmae}_{instance.pk}{file_extension}"
+
+    return os.path.join('images', unique_filename)
 
 
 class Book(models.Model):
-
-    DEFAULT_BOOK_COVER = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPa8pabMznsqT-GWDJccgg3uLBcnSwOpIXrA&usqp=CAU"
+    DEFAULT_BOOK_COVER = 'static/images/no_cover.jpg'
 
     CURRENT_YEAR = datetime.date.today().year
     MIN_LEN_BOOK_DESCRIPTION = 100
@@ -19,9 +26,9 @@ class Book(models.Model):
     MIN_YEAR_ADDED_VALUE = 1000
     SUPER_USER_EMAIL = 'denny@gmail.com'
 
-    cover_image = models.URLField(
-        default=DEFAULT_BOOK_COVER,
-        blank=True,
+    cover_image = models.ImageField(
+        upload_to='cover_images',
+        default='no_cover.jpg',
     )
 
     title = models.CharField(
@@ -42,8 +49,8 @@ class Book(models.Model):
         blank=False,
         null=False,
         default=CURRENT_YEAR,
-        help_text= f"If the book you are trying to add was published before {MIN_YEAR_ADDED_VALUE},\n"
-                   f"please contact the administrator at {SUPER_USER_EMAIL}.",
+        help_text=f"If the book you are trying to add was published before {MIN_YEAR_ADDED_VALUE},\n"
+                  f"please contact the administrator at {SUPER_USER_EMAIL}.",
 
         validators=[
             MinValueValidator(MIN_YEAR_ADDED_VALUE),
@@ -58,7 +65,7 @@ class Book(models.Model):
         'category.Category',
         blank=False,
         help_text=f"If you can`t find the category you need,\n"
-                 f"please contact the administrator at {SUPER_USER_EMAIL}."
+                  f"please contact the administrator at {SUPER_USER_EMAIL}."
     )
 
     description = models.TextField(
@@ -83,10 +90,7 @@ class Book(models.Model):
         if not self.added_by:
             self.added_by = kwargs.pop('user', None)
 
-        if not self.pk:
-            super().save(*args, **kwargs)
-
-            return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.title} by {self.author}"
@@ -96,17 +100,5 @@ class Book(models.Model):
         total_reviews = self.book_reviews.all()
         if total_reviews:
             total_rating = sum(rat.rating for rat in total_reviews)
-            return total_rating/len(total_reviews)
+            return total_rating / len(total_reviews)
         return 0
-
-
-
-
-
-
-
-
-
-
-
-

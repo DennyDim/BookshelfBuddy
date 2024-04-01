@@ -10,7 +10,7 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <h1 class="text-center">Your text</h1>
-                <form method="post" action="{% url "update book" pk=book.pk %}">
+                <form method="post" action="{% url "update book" pk=book.pk %}" enctype="multipart/form-data">
                     
                     {{ form|crispy }}
                     {% csrf_token %}
