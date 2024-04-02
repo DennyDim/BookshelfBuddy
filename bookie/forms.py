@@ -1,5 +1,6 @@
 from django.contrib.auth import forms as auth_forms
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 from django.core.validators import MinValueValidator
 
 from bookie.models import Bookie, BookieProfile
@@ -8,41 +9,21 @@ from bookie import validators as bookie_validators
 
 
 class BookieRegistrationForm(auth_forms.UserCreationForm):
-    class Meta:
+
+    class Meta(UserCreationForm.Meta):
         model = Bookie
-        fields = ('email', 'age', 'password1', 'password2')
+        fields = ['email', 'age', 'password1', 'password2']
 
-        MIN_PASSWORD_LENGTH = 6
-        MIN_LEN_NUMBERS = 2
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs.update({
+            'placeholder': 'Enter your email address',
+            'autofocus': True,
+        })
 
-        labels = {
-            'password1': 'Create stable password',
-            'password2': 'Re-enter your password',
-        }
+        self.fields['password1'].label = 'Create a stable password:'
+        self.fields['password2'].label = 'Re-enter your password:'
 
-        help_texts = {
-            'age': 'This field is important for our site.',
-            'password1': f"~ Your password must be at least {MIN_PASSWORD_LENGTH} characters long! <br>"
-                         f"~ Your password must have at least {MIN_LEN_NUMBERS} digits!",
-        }
-
-        widgets = {
-            'email': forms.EmailInput(attrs={
-                'placeholder': 'Enter your email address',
-                'autofocus': True,
-            }),
-
-            'password1': forms.PasswordInput(
-            ),
-
-            'password2': forms.PasswordInput()
-        }
-
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-
-            self.fields['password1'].validators.append(bookie_validators.CustomLengthValidator)
-            self.fields['password1'].validators.append(bookie_validators.CustomNumberValidator)
 
 
 class CustomAuthenticationForm(auth_forms.AuthenticationForm):
@@ -55,7 +36,7 @@ class CustomAuthenticationForm(auth_forms.AuthenticationForm):
 class LogInBookieForm(CustomAuthenticationForm):
     class Meta:
         model = Bookie
-        fields = ('email', 'password')
+        fields = ['email', 'password']
 
         widgets = {
             'email': forms.EmailInput(attrs={
@@ -75,14 +56,19 @@ class LogInBookieForm(CustomAuthenticationForm):
 class BookieProfileForm(forms.ModelForm):
     class Meta:
         model = BookieProfile
-        fields = ['profile_picture', 'username', 'bio']
+        fields = ['profile_picture','country', 'bio',]
 
         widgets = {
-            'username': forms.TextInput(attrs={'placeholder': 'Create a unique name for yourself. |form',
-                                               'autofocus': True},
-                                        )
-            ,
             'bio': forms.Textarea(
                 attrs={'placeholder': 'Share something about yourself! |form'}
+            ),
+            'country': forms.TextInput(
+                attrs={'placeholder': 'Share where you come from...'}
             )
         }
+
+
+class BookieDisplayProfileForm(forms.ModelForm):
+    class Meta:
+        model = BookieProfile
+        fields = ['profile_picture', 'bio', 'country', 'have_read', 'want_to_read']

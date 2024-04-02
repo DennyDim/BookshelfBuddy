@@ -6,9 +6,10 @@ from django.urls import reverse_lazy
 from django.views.generic.base import View
 from django.views.generic import DetailView, UpdateView, CreateView, DeleteView
 
+from book.forms import BookForm
 from book.models import Book
 
-from book.forms import BookForm
+
 
 from bookie.models import BookieProfile, Bookie
 from reviews.models import ReviewAndRating
@@ -90,8 +91,6 @@ class BookUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('book details', kwargs={'pk': self.object.pk})
-
-
 
 
 class BookDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

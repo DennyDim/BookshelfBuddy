@@ -9,12 +9,6 @@ from django.contrib.auth import models as auth_models
 
 
 # Create your models here.
-def custom_upload_to(instance, filename):
-    base_filenmae, file_extension = os.path.splitext(filename)
-
-    unique_filename = f"{base_filenmae}_{instance.pk}{file_extension}"
-
-    return os.path.join('images', unique_filename)
 
 
 class Book(models.Model):
@@ -35,7 +29,7 @@ class Book(models.Model):
         unique=True,
         max_length=100,
         blank=False,
-        null=False,
+        null=True,
     )
 
     author = models.ForeignKey(
@@ -59,12 +53,12 @@ class Book(models.Model):
 
     )
 
-    # add category and cover image
+    # add Genre and cover image
 
-    categories = models.ManyToManyField(
-        'category.Category',
+    genres = models.ManyToManyField(
+        'Genre.Genre',
         blank=False,
-        help_text=f"If you can`t find the category you need,\n"
+        help_text=f"If you can`t find the Genre you need,\n"
                   f"please contact the administrator at {SUPER_USER_EMAIL}."
     )
 
@@ -102,3 +96,4 @@ class Book(models.Model):
             total_rating = sum(rat.rating for rat in total_reviews)
             return total_rating / len(total_reviews)
         return 0
+

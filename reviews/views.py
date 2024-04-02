@@ -5,7 +5,6 @@ from django.urls import reverse_lazy
 from django.views.generic import DeleteView, UpdateView, CreateView
 
 from reviews.models import ReviewAndRating
-from reviews.forms import ReviewForm
 
 # Create your views here.
 

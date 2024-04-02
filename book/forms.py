@@ -9,13 +9,13 @@ class BookForm(forms.ModelForm):
 
     class Meta:
         model = Book
-        fields = ['title', 'author', 'categories', 'year_published', 'cover_image', 'description']
+        fields = ['title', 'author', 'genres', 'year_published', 'cover_image', 'description']
 
         widgets = {
             'title': forms.TextInput(
                 attrs={'placeholder': 'Enter book title...'},
             ),
-            'categories': forms.CheckboxSelectMultiple(),
+            'genres': forms.CheckboxSelectMultiple(),
         }
 
 

@@ -5,7 +5,7 @@ from django.db import models
 
 
 
-class Category(models.Model):
+class Genre(models.Model):
 
     name = models.CharField(
         max_length=100,
@@ -42,8 +42,6 @@ class Category(models.Model):
 
     def __str__(self):
         return f"{self.name}{self.get_age_restriction}\nBooks: {self.get_book_count()}"
-
-
 
 
 

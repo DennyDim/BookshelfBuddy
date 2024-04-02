@@ -9,9 +9,10 @@ from bookie.models import Bookie
 class ReviewAndRating(models.Model):
 
     book = models.ForeignKey(
-        Book,
+        'book.Book',
         on_delete=models.CASCADE,
-        related_name='book_reviews'
+        related_name='book_reviews',
+        null=True,
     )
 
     user = models.ForeignKey(
@@ -22,10 +23,12 @@ class ReviewAndRating(models.Model):
 
     review = models.TextField(
         max_length=100,
-        blank=True
+        blank=True,
+        null=True
     )
 
     rating = models.FloatField(
+        null=True,
     )
 
     has_voted = models.BooleanField(
@@ -38,5 +41,3 @@ class ReviewAndRating(models.Model):
 
     def __str__(self):
         return self.review
-
-

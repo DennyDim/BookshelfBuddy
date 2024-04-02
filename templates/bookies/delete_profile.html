@@ -1,12 +1,22 @@
-{% extends "base.html" %}
-
-{% block main_content %}
-        <form action="{% url 'delete bookie profile' pk=bookieprofile.pk%}" method="post">
-        <h1>You are about to delete all information about you. Proceed?</h1>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Profile Confirmation</title>
+</head>
+<body>
+    <h1>Delete Profile</h1>
+    <p>Are you sure you want to delete your profile?</p>
+    <form id="delete-profile-form" method="post" action="{% url 'delete bookie profile' pk=object.pk %}">
         {% csrf_token %}
-        <input type="submit"  class="btn btn-primary" value="Agree">
-        </form>
-        
-        
-    
-{% endblock %}
+        <button type="button" onclick="confirmDelete()">Delete</button>
+    </form>
+
+    <script>
+        function confirmDelete() {
+            if (confirm("Are you sure you want to delete your profile?")) {
+                document.getElementById("delete-profile-form").submit();
+            }
+        }
+    </script>
+</body>
+</html>

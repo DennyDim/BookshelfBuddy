@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from category import views as category_views
+from Genre import views as category_views
 
 from django.views.generic import ListView, DetailView
 
@@ -18,5 +18,4 @@ class AuthorDetailView(DetailView):
     model = Author
     template_name = 'authors/author_profile.html'
     context_object_name = 'author'
-
 

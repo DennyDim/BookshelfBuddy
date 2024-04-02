@@ -78,7 +78,7 @@ class BookieProfile(models.Model):
 """
 
 
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.db.models import OneToOneField
 
@@ -96,12 +96,17 @@ class CustomBookieManager(BaseUserManager):
         user = self.model(email=email, age=age, **extra_fields)
 
         user.set_password(password)
+
+        #extra_fields.setdefault('is_staff', False)
+        #extra_fields.setdefault('is_active', True)
+
         user.save(using=self._db)
         return user
 
     def create_superuser(self, email, age, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
+
+        extra_fields['is_staff'] = True
+        extra_fields['is_superuser'] = True
 
         return self.create_user(email, age, password, **extra_fields)
 
@@ -109,17 +114,20 @@ class CustomBookieManager(BaseUserManager):
         return self.get(email=email)
 
 
-class Bookie(AbstractBaseUser):
-    email = models.EmailField(
-        unique=True,
-
-    )
-    age = models.PositiveIntegerField(
-        default=18,
-    )
+class Bookie(AbstractBaseUser, PermissionsMixin):
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+
+
+    email = models.EmailField(
+        unique=True,
+    )
+    age = models.PositiveIntegerField(
+        default=18,
+        help_text="This field is important for our site."
+    )
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
@@ -134,16 +142,16 @@ class Bookie(AbstractBaseUser):
 
 class BookieProfile(models.Model):
 
-    bookie = OneToOneField(
+    user = OneToOneField(
         Bookie,
         on_delete=models.CASCADE,
-        related_name='user'
+        related_name='profile'
     )
 
-    username = models.CharField(
+    country = models.CharField(
         max_length=100,
-        unique=True,
         null=True,
+        blank=True,
     )
 
     profile_picture = models.ImageField(
@@ -152,7 +160,9 @@ class BookieProfile(models.Model):
     )
 
     bio = models.TextField(
-        help_text="Share something about yourself."
+        help_text="Share something about yourself.",
+        null=True,
+        blank=True
     )
 
     want_to_read = models.ManyToManyField(
@@ -169,15 +179,12 @@ class BookieProfile(models.Model):
         related_name="have_read"
     )
 
-    class Meta:
-        verbose_name = 'profile'
 
     def get_bookie_name(self):
-        return self.username if self.username\
-            else self.bookie.email.split("@")[0].capitalize()
+        return self.user.email.split("@")[0].capitalize()
 
     def greet_on_main_page(self):
         return f"Hello, {self.get_bookie_name}"
 
-    def __str__(self):
-        return f"{self.get_bookie_name}`s Profile."
+    def get_profile_caption(self):
+        return f"{self.get_bookie_name()}`s Profile"

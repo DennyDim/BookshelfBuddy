@@ -19,8 +19,8 @@ class CustomLengthValidator(BaseValidator):
                 params={'min_length': self.min_length},
             )
 
-    def get_help_message(self):
-        return f"~ You password mst contain at least {self.min_length} characters"
+    def get_help_text(self):
+        return f"You password mst contain at least {self.min_length} characters"
 
 
 class CustomNumberValidator(BaseValidator):
@@ -37,3 +37,6 @@ class CustomNumberValidator(BaseValidator):
                 code='not_enough_numbers',
                 params={'min_length': self.min_len_numbers},
             )
+
+    def get_help_text(self):
+        return f"Your password mst contain at least {self.min_len_numbers} numbers!"
