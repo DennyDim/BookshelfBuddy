@@ -1,74 +1,51 @@
-from django.shortcuts import render
-
+from django.db.models import Q
+from django.shortcuts import render, get_object_or_404
 
 from book.models import Book
 
 from Genre.models import Genre
+
+from bookie.models import Bookie
+
 
 
 # Here I filter the books and only get the appropriate books
 # if the user isn`t authenticated, he can`t view books with age restriction
 # if he is registered, I check his age in order to return a book
 # That`s why to simplify the process, I only get the age if the user is authenticated
-def get_filtered_books(books: list, age: int = None):
-    filtered_books = []
 
-    for book in books:
-
-        # I run through each Genre to determine the minimal age required
-        try:
-            min_age = min([c.age_restriction for c in book.Genre.all() if c.age_restriction is not None])
-        except ValueError:
-            min_age = None
-
-        # in this scenario we have age restriction and auth user
-        if min_age and age:
-            if min_age <= age:
-                filtered_books.append(book)
-
-        # here we simply don`t have any age restrictions
-        elif min_age is None:
-            filtered_books.append(book)
-
-    return filtered_books
 
 
 # Here I filter the categories
-def get_filtered_categories(age: int = None):
+def get_filtered_categories(user_id: int):
+
     genres = Genre.objects.all()
-    filtered_categories = []
+    user = get_object_or_404(Bookie, pk=user_id)
 
-    for genre in genres:
-        if genre.age_restriction and age:
-            # I get only the categories that are available to the auth user
-            if genre.age_restriction <= age:
-                filtered_categories.append(Genre)
-
-        # And here I just get the categories without age restriction. They are available to anyone.
-        elif not genre.age_restriction:
-            filtered_categories.append(Genre)
+    if user.is_authenticated:
+        if user.is_staff:
+            filtered_categories = genres
+        else:
+            filtered_categories = genres.filter(Q(age_restriction__lte=user.age)| Q(age_restriction__isnull=True))
+    else:
+        filtered_categories = genres.filter(age_restriction__isnull=True)
 
     return filtered_categories
 
 
 def main_page(request):
-    filtered_categories = []
-    total_books = []
 
-    if request.user.is_staff:
-        total_books = Book.objects.all()
-    else:
-        user_age = None
-        if request.user.is_authenticated:
-            user_age = request.user.age
+    genres = get_filtered_categories(request.user.pk)
+    all_books_added = Book.objects.all()
 
-        filtered_categories = get_filtered_categories(user_age)
-        total_books = Book.objects.all().count()
 
+
+    current_user = request
     context = {
-        'total_books': total_books,
+        'current_user': current_user,
+        'genres': genres,
+        'all_books_added': all_books_added,
+
     }
-    if not request.user.is_staff:
-        context['categories'] = filtered_categories
 
     return render(request, "main_page.html", context)

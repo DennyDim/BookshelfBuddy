@@ -8,55 +8,61 @@
 
     
     <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/journal/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/reviews.css' %}">
 
 
 
     
     <br>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <h1 class="text-center">{{ book.title}}</h1>
 
-                {% csrf_token %}
-                <form method="get" action="{% url "book details" pk=book.pk %}" enctype="multipart/form-data">
-                    
-                    <img src="{{ book.cover_image.url }}" alt="Cover Image" style="width: 300px">
-
-                <p>
-                    Url: {{ book.cover_image }}
-                </p>
-                <br>
-             
-                    <ul type="none">
-                        
-                        <li class="align-left descname"><h4 class="data-decor">By: {{ book.author }}</h4></li>
-               
+    <form method="get" action="{% url 'book details' pk=book.pk%}" enctype="multipart/form-data">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <img src="{{ book.cover_image.url }}" alt="Cover Image" style="width: 300px;">
+                </div>
+            
+                <div class="col-md-8">
+                    <ul class="list-unstyled">
+                        <li><h4>Title: {{ book.title }}</h4></li>
+                        <li><h4>Author: {{ book.author }}</h4></li>
                         <li><h4>Published in: {{ book.year_published }}</h4></li>
-                        <li><h4>
-                            {% if book.category.all|length == 1 %}
-                            Category: {{ book.category.name }}
-                            {% else %}
-                            Categories:
-                                {% for category in book.categories.all %}
-                                {{ category.name }}
-                                    {% if not forloop.last %}
-                                        / 
-                                    {% endif %}
-                                {% endfor %}
-                            {% endif %}
-                        </h4>
-                        </li>
-                        <li class="description"><h4>Summary: {{ book.description }}</h4></li>
-                        <li><h6 class="grey">Added by: {% if not book.added_by %}Anonymous
-                        {% else %}<a href="{% url 'bookie profile' pk=book.added_by.pk %}">{{ book.added_by }}</a>
-                        {% endif %}</h6></li>
-
-                        <h4 class="container">Overall rating: {{ book.overall_rating|floatformat:1 }}</h4>
-                        
-                    </ul>                
+                        <li>
+                            <h4>
+                                {% if book.category.all|length == 1 %}
+                                    Category: {{ book.category.name }}
+                                {% else %}
+                                    Categories:
+                                    {% for genre in book.genres.all %}
+                                        {{ genre.name }}
+                                        {% if not forloop.last %}
+                                            /
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </h4></li>
+                    
+                        <li class="description"><h4>
+                            Summary:
+                                 <p class="text-wrap text-break">{{ book.description }}</p>
+                                </h4></li>
+                    
+                        <li><h6 class="text-secondary">
+                                Added by: {% if not book.added_by %}Anonymous{% else %}
+                                <a href="{% url 'bookie profile' pk=book.added_by.pk %}">{{ book.added_by }}</a>
+                                {% endif %}</h6></li>
+                    </ul>
+                <h4>Overall rating: {{ book.overall_rating|floatformat:1 }}</h4>
+        
                 
-                </form>
+                </div>
+            </div>
+    
+        </div>
+    </form>
+
+
+
 
             {# WORKING WITH THE LIBRARIES WANT_TO_READ AND HAVE_READ AND LATER WITH THE REVIEWS FUNCTIONS #}
 
@@ -77,7 +83,8 @@
                     {# We go to the reviews #}
                     
                     {% if not current_review.has_voted %}
-                         <form action="{% url 'submit review' book_id=book.pk %}" method="post" onsubmit="validateForm();">
+                        <div class="container text-centered">
+                         <form action="{% url 'submit review' book_id=book.pk %}" method="post" onsubmit="return validateForm();">
                             {% csrf_token %}
 
                             <h5>Rate the book:</h5>
@@ -116,21 +123,39 @@
                             </div>
 
                             <h5>Share your opinion on this  book.</h5>
+                             <div class="d-flex align-items-center">
+                             <h5 class="text-secondary">How would you describe your review?</h5>
+                                 <select class="btn" name="type" id="review-type-select">
+                                    <option class="collapsed" value="positive">Positive</option>
+                                    <option  value="neutral">Neutral</option>
+                                    <option value="negative">Negative</option>
+                                 </select>
+
+                             </div>
+
                                 <div>
-                                    <textarea name="review" rows="4" class="form-control"></textarea>
+                                    <textarea id='type-border' name="review" rows="4" class="form-control type-border"></textarea>
                                     <input type="submit" value="Submit" class="btn btn-primary">
 
 
                                 </div>
+
                          </form>
-                        
+                        </div>
                         
                     {% else %}
                     {# he can only edit/delete his review #}
+                        <div class="container text-center">
+                        <h4>-------------------------------------------------------</h4>
                         <h4>Your rating of this book: {{ current_review.rating }}</h4>
-                        <h4>Your review of this book:</h4>
-                        <textarea>{{ current_review.review }}</textarea>
-                      
+                        <div class="container flex-container">
+                            <h4>Your rating:</h4>
+                                <div class="text-wrap text-break">
+                                    {{ current_review.review }}
+                                </div>
+                        </div>
+                        <h4>-------------------------------------------------------</h4>
+
                         
                         {# delete button #}
                         <form method="post" action="{% url 'delete review' current_review.pk %}">
@@ -139,7 +164,7 @@
                             <button type="submit" class="btn btn-primary" onclick="return confirmReviewDelete();"
                             >Delete your review and rating</button>
                             </form>
-                        
+                        </div>
                     {% endif %}
 
                 {% elif book in current_user.profile.want_to_read.all %}
@@ -203,7 +228,7 @@
                 {% if request.user.is_superuser or book.added_by == request.user %}
                     <a class="btn btn-primary container row justify-content-center" href="{% url 'update book' pk=book.pk %}">Edit Book</a>
 
-                    <form method="post" action="{% url 'delete book' pk=object.pk %}">
+                    <form method="post" action="{% url 'delete book' pk=book.pk %}">
                     {% csrf_token %}
                     <button type="submit" onclick="return confirmBookDelete();"
                     class="btn container row">Delete Book</button>
@@ -215,6 +240,65 @@
             </div>
         </div>
     </div>
+
+    <div>
+    {# DISPLAYING ALL THE REVIEWS #}
+    
+    
+    <div class="container text-center">
+    <div class="row">
+        <div class="col">
+            <h4>Sort reviews by:</h4>
+        </div>
+        <div class="col">
+            <select id="review-type-filter" class="btn btn-secondary">
+                <option value="">All reviews</option>
+                {% for review_type in review_types %}
+                    <option value="{{ review_type.0 }}">{{ review_type.1 }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+    
+    
+    <div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            {% for review in book.book_reviews.all %}
+                
+                {% if review.review %}
+                    <div class="review">
+                    <div class="reviews card mb-3 type-border-{{ review.type }}">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="{{ review.user.profile.profile_picture.url }}" style="width: 20%; height: 20%; object-fit: cover;
+                                width: 90px; height: 90px;" class="profile-picture rounded-circle">
+                                <div class="profile-circle me-3"></div>
+                                <div>
+                                    <a href="{% url 'bookie profile' pk=review.user.pk %}">{{ review.user.email }}</a>
+                                    <h5 class="card-title mb-0">
+                                        <div class="text-wrap text-break">
+                                            {{ review.review }}
+                                        </div>
+                                    </h5>
+                                    <h6 class="text-secondary">Date Published: {{ review.date_added }}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% empty %}
+                <h3>No reviews yet.</h3>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+
 
     <script>
     function confirmBookDelete(){
@@ -229,21 +313,60 @@
     
    
     function validateForm() {
-        var review = document.getElementById("id_review").value;
-        var rating = document.querySelector('input[name="rating"]:checked');
+        let ratingChecked = false;
+        let ratingInputs = document.querySelectorAll('input[name="rating"]');
 
-        if (review.trim() === "") {
-            alert("Please enter your review.");
+        ratingInputs.forEach(function (input){
+            if (input.checked){
+                ratingChecked = true;
+            }
+        });
+
+        if (!ratingChecked){
+            alert('Please rate the current book!');
             return false;
         }
-
-        if (!rating) {
-            alert("Please select a rating.");
-            return false;
-        }
-
         return true;
     }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        let reviewTypeSelect = document.getElementById("review-type-select");
+        let reviewTextarea = document.querySelector("textarea[name='review']");
+
+        // Here I colour thr TextArea according to the chosen type when submitting the form:
+
+        reviewTypeSelect.addEventListener("change", function() {
+            let selectedValue = this.value;
+            reviewTextarea.classList.remove("type-border-negative", "type-border-positive", "type-border-neutral");
+
+
+            reviewTextarea.classList.add("type-border-" + selectedValue.toLowerCase());
+
+        });
+
+        // Here I paint a user`s review depending on the type he already set for his review:
+
+        let reviewCards = document.querySelectorAll('.card');
+
+        reviewCards.forEach(function(card){
+            let type = card.type;
+
+             if (type === "Positive") {
+            card.style.borderColor = "mediumseagreen";
+            } else if (type === "Negative") {
+                card.style.borderColor = "darkred";
+            } else {
+            card.style.borderColor = "darkgoldenrod";
+        }
+        })
+    });
+    
+    
+
+
+
+
+
 
     
     </script>

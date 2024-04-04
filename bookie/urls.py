@@ -12,25 +12,7 @@ urlpatterns = (
     path('<int:pk>/', include([
         path('', bookie_views.ProfileDetailView.as_view(), name='bookie profile'),
         path('edit/', bookie_views.ProfileUpdateView.as_view(), name='edit bookie profile'),
-        path('delete/', bookie_views.ProfileDeleteView.as_view(), name='delete bookie profile'),
+        path('delete/', bookie_views.delete_bookie, name='delete bookie profile'),
     ])
     ))
 
-
-    #path('<int:pk>/', bookie_views.ProfileDetailView.as_view(), name='bookie profile'),
-    #path('<int:pk>/edit/', bookie_views.ProfileUpdateView.as_view(), name='edit bookie profile'),
-    #path('<int:pk>/delete/', bookie_views.ProfileDeleteView.as_view(), name='delete bookie profile'),
-
-
-
-"""
-superuser:
-        denny
-        denny
-        
-        
-staff:
-    yoda
-    yoda11
-    age: 35
-"""

@@ -1,4 +1,5 @@
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, JsonResponse
@@ -18,20 +19,6 @@ from bookie.forms import BookieProfileForm, BookieDisplayProfileForm
 
 # Create your views here.
 
-
-def main_page(request):
-
-    text = "This is the main page"
-
-    user = request.user
-
-    context = {
-        "text": text,
-        "user": user
-    }
-    return render(request, "main_page.html", context)
-
-
 class RegisterBookieView(CreateView):
     template_name = "bookies/registration.html"
     form_class = bookie_forms.BookieRegistrationForm
@@ -46,8 +33,8 @@ class BookieLoginView(LoginView):
 
 def logout_view(request):
     logout(request)
-    login_url = reverse('login bookie')  # Get the URL for 'login bookie'
-    return HttpResponse(f"You have been logged out successfully. <a href='{login_url}'>That's fine</a>")
+    login_url = reverse('login bookie')
+    return render(request, "bookies/delete_profile.html")
 
 
 # CRUD OPERATIONS WITH THE PROFILE
@@ -61,18 +48,20 @@ class ProfileDetailView(DetailView):
 
     def get_object(self, queryset=None):
 
-        profile = get_object_or_404(BookieProfile, user=self.request.user)
+        user_id = self.kwargs.get('pk')
 
-        if profile.user != self.request.user:
-            raise PermissionDenied
-
+        user = get_object_or_404(Bookie, id=user_id)
+        profile = get_object_or_404(BookieProfile, user=user)
         return profile
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        user_id = self.kwargs.get('pk')
 
-        context['user'] = self.request.user
+        user = get_object_or_404(Bookie, id=user_id)
+
+        context['user'] = user
         context['profile'] = self.get_object()
         return context
 
@@ -92,12 +81,14 @@ class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         return self.request.user == self.get_object().user or self.request.user.is_superuser
 
-
+"""
 class ProfileDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Bookie
-    template_name = 'bookies/delete_profile.html'
-    context_object_name = 'user to delete'
     success_url = reverse_lazy('login bookie')
+    template_name = 'bookies/delete_profile.html'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Bookie, pk=self.request.user.pk)
 
     def test_func(self):
 
@@ -105,12 +96,15 @@ class ProfileDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
         return self.request.user == user or self.request.user.is_superuser
 
-    def get_object(self, queryset=None):
-        return get_object_or_404(Bookie, pk=self.request.user.pk)
+"""
 
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        success_url = self.get_success_url()
+@login_required
+def delete_bookie(request, pk):
 
-        self.object.delete()
-        return reverse_lazy(success_url)
+    bookie = get_object_or_404(Bookie, pk=pk)
+
+    if request.method == 'POST':
+        bookie.delete()
+        return redirect('main page')
+
+    return render(request, 'bookies/delete_profile.html')

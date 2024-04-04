@@ -4,19 +4,7 @@
     <title>Delete Profile Confirmation</title>
 </head>
 <body>
-    <h1>Delete Profile</h1>
-    <p>Are you sure you want to delete your profile?</p>
-    <form id="delete-profile-form" method="post" action="{% url 'delete bookie profile' pk=object.pk %}">
-        {% csrf_token %}
-        <button type="button" onclick="confirmDelete()">Delete</button>
-    </form>
-
-    <script>
-        function confirmDelete() {
-            if (confirm("Are you sure you want to delete your profile?")) {
-                document.getElementById("delete-profile-form").submit();
-            }
-        }
-    </script>
+    You have been logged out. 
+    <a href="{% url 'login bookie' %}">That`s fine</a>
 </body>
 </html>

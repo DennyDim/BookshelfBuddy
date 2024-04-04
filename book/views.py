@@ -40,6 +40,8 @@ class BookDetailView(DetailView):
         context['book'] = self.get_object()
         context['current_user'] = current_user
         context['current_review'] = current_review
+        context['review_types'] = ReviewAndRating.TYPE_CHOICES
+
         return context
 
 
@@ -102,3 +104,5 @@ class BookDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         book = self.get_object()
 
         return self.request.user == book.added_by or self.request.user.is_superuser
+
+

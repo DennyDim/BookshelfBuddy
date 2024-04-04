@@ -1,3 +1,7 @@
+from django.utils import timezone
+
+import time
+
 from django.db import models
 
 from book.models import Book
@@ -7,6 +11,12 @@ from bookie.models import Bookie
 
 
 class ReviewAndRating(models.Model):
+
+    TYPE_CHOICES = (
+        ('positive', 'Positive'),
+        ('negative', 'Negative'),
+        ('neutral', 'Neutral'),
+    )
 
     book = models.ForeignKey(
         'book.Book',
@@ -21,8 +31,13 @@ class ReviewAndRating(models.Model):
         null=True,
     )
 
+    type = models.CharField(
+        max_length=10,
+        choices=TYPE_CHOICES,
+        default='Neutral'
+    )
+
     review = models.TextField(
-        max_length=100,
         blank=True,
         null=True
     )
@@ -35,8 +50,15 @@ class ReviewAndRating(models.Model):
         default=False,
         )
 
+    date_added = models.DateTimeField(
+        auto_now_add=True
+    )
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+        if not self.pk:
+            self.date_added = time.time()
+
         self.book.save()
 
     def __str__(self):

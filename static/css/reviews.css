@@ -1,0 +1,17 @@
+
+.type-border{
+    border-width: 3px;
+    border-style: solid;
+}
+
+.type-border-negative{
+    border-color: darkred;
+}
+
+.type-border-positive{
+    border-color: mediumseagreen;
+}
+
+.type-border-neutral{
+    border-color: orange;
+}

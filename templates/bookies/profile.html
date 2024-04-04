@@ -17,9 +17,9 @@
                 <ul type="none">
                     <img src='{{ profile.profile_picture.url }}' alt="Profile Picture" style="width: 200px">
                 
-                    <li>Email: {{ user.email }}</li>
+                    <li>Email: {{ object.user.email }}</li>
             
-                    <li>Age: {{ user.age }}</li>
+                    <li>Age: {{ object.user.age }}</li>
                 
                     <li>From: {% if profile.country %}{{ profile.country }}
                         {% else %}Not set{% endif %}</li>
@@ -33,11 +33,11 @@
                     
                         
                         
-                        <form method="post" action="{% url 'delete bookie profile' pk=object.pk %}">
+                        <form method="post" action="{% url 'delete bookie profile' pk=user.pk%}">
                             {% csrf_token %}
                         <button type="submit" onclick="return confirmDelete();"
                         class="btn container row">Delete My Profile</button>
-                    </form>
+                        </form>
                         
 
                 {% endif %}

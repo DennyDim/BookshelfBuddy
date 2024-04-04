@@ -7,6 +7,8 @@ import datetime
 
 from django.contrib.auth import models as auth_models
 
+from bookie.models import Bookie
+
 
 # Create your models here.
 
@@ -96,4 +98,9 @@ class Book(models.Model):
             total_rating = sum(rat.rating for rat in total_reviews)
             return total_rating / len(total_reviews)
         return 0
+
+    @property
+    def required_age(self):
+        return max([g.age_restriction for g in self.genres.all()])
+
 

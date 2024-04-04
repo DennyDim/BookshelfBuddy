@@ -4,7 +4,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, UpdateView, CreateView
 
+from book.models import Book
+from reviews.forms import ReviewForm
 from reviews.models import ReviewAndRating
+
+from django.shortcuts import HttpResponse
 
 # Create your views here.
 
@@ -13,27 +17,39 @@ def submit_review(request, book_id):
     current_url = request.META.get('HTTP_REFERER')
 
     if request.method == 'POST':
+
         form = ReviewForm(request.POST)
+
         if form.is_valid():
             data = form.save(commit=False)
+
             data.book_id = book_id
             data.user_id = request.user.pk
             data.has_voted = True
 
             data.review = form.cleaned_data['review']
             data.rating = form.cleaned_data['rating']
+            data.type = form.cleaned_data['type']
+            data.current_user = request.user
 
             data.save()
 
             return redirect(current_url)
-    else:
-        form = ReviewForm()
-        
+
+    form = ReviewForm()
+    current_book = Book.objects.get(id=book_id)
+    context = {
+        'form': form,
+        'current_pk': book_id,
+        'book': current_book,
+    }
+
+    return render(request, 'books/book_details.html', context)
+
+
 
 class DeleteReview(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = ReviewAndRating
-    success_url = reverse_lazy('main page')
-
 
     def test_func(self):
 
@@ -41,5 +57,6 @@ class DeleteReview(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
         return self.request.user == review.user or self.request.user.is_staff
 
-
-
+    def get_success_url(self):
+        current_url = self.request.META.get('HTTP_REFERER')
+        return current_url

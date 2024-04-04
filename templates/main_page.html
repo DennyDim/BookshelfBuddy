@@ -3,23 +3,33 @@
 
 {% block main_content %}
     <h1>This is the main page</h1>
-    
-    {% if total_books == 0 %}
+    <p>Yoda (18) can see only New2 in Comedy</p>
+
+
+    {% if all_books_added|length == 0 %}
     <h1 class="row justify-content-center">No books added yet :(</h1>
     
     {% else %}
     
-        {% for category in categories %}
-            {% if category.get_book_count != 0%}
-                <h2>{{ category.name }}</h2>
+        {% for genre in genres %}
+            {% if genre.get_book_count != 0%}
+                <h2>{{ genre.name }}{{ genre.get_age_restriction}}</h2>
                 <ul>
-                    {% for book in category.book_set.all %}
+                    {% for book in genre.book_set.all %}
+                        {% if book.required_age and book.required_age <= user.age %}
                         <li><a href="{% url 'book details' pk=book.pk%}">{{ book }}</a></li>
+                        {% elif book.required_age is None %}
+                            <li><a href="{% url 'book details' pk=book.pk%}">{{ book }}</a></li>
+                        {% elif user.is_staff %}
+                            <li><a href="{% url 'book details' pk=book.pk%}">{{ book }}</a></li>
+                        {% endif %}
                     {% endfor %}
                 </ul>
         {% endif %}
     {% endfor %}
     {% endif %}
+    
+
     
     
 {% endblock %}

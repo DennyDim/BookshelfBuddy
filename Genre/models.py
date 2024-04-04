@@ -33,7 +33,7 @@ class Genre(models.Model):
     @property
     def get_age_restriction(self):
         if self.age_restriction:
-            return f"({self.age_restriction})"
+            return f"/{self.age_restriction}/"
         else:
             return ''
 
