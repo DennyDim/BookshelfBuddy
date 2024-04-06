@@ -33,19 +33,3 @@ def get_filtered_categories(user_id: int):
     return filtered_categories
 
 
-def main_page(request):
-
-    genres = get_filtered_categories(request.user.pk)
-    all_books_added = Book.objects.all()
-
-
-
-    current_user = request
-    context = {
-        'current_user': current_user,
-        'genres': genres,
-        'all_books_added': all_books_added,
-
-    }
-
-    return render(request, "main_page.html", context)

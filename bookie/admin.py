@@ -11,7 +11,9 @@ from reviews import models as review_models
 
 
 admin.site.register(book_models.Book)
+
 admin.site.register(author_models.Author)
+admin.site.register(author_models.Country)
 
 
 admin.site.register(bookie_models.Bookie)

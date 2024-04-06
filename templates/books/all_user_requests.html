@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block main_content %}
+{% load crispy_forms_tags %}
+    
+     {% for request in user_requests %}
+            <li>{{ request.title }} by {{ request.author }} ({{ request.year_published }})</li>
+        {% empty %}
+            <li>No requests found.</li>
+        {% endfor %}
+
+{% endblock %}

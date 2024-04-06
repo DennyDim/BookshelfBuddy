@@ -1,9 +1,9 @@
 
 from django.urls import path
 
-from .views import main_page
+from book import views as book_views
 
 
 urlpatterns = [
-    path("", main_page, name="main page"),
+    path("", book_views.BooksListView.as_view(), name="main page"),
 ]

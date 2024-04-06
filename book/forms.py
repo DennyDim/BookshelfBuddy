@@ -1,15 +1,14 @@
 
 from django import forms
 
-from book.models import Book
-
+from book.models import Book, BookRequestFromUserModel
 
 
 class BookForm(forms.ModelForm):
 
     class Meta:
         model = Book
-        fields = ['title', 'author', 'genres', 'year_published', 'cover_image', 'description']
+        fields = ['title', 'author', 'genres', 'year_published', 'cover_image', 'description', 'name_of_series', 'series_number']
 
         widgets = {
             'title': forms.TextInput(
@@ -18,13 +17,13 @@ class BookForm(forms.ModelForm):
             'genres': forms.CheckboxSelectMultiple(),
         }
 
-
-        error_messages = {
-            'title':
-                {'unique': 'Sorry, someone has already added this book.'}
-        }
-
         help_texts = {
             'author': 'If you can`t find the author of this book,\n'
                       ' please create it first then add the book.'
         }
+
+
+class BookRequestForm(forms.ModelForm):
+    class Meta:
+        model = BookRequestFromUserModel
+        fields = ['title', 'author_name', 'year_published', ]

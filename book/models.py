@@ -1,25 +1,26 @@
-import os
 
-from django.core.validators import MinLengthValidator, MinValueValidator, MaxValueValidator
+from django.core.validators import MinLengthValidator, MinValueValidator, MaxValueValidator, MaxLengthValidator
 from django.db import models
 
 import datetime
 
-from django.contrib.auth import models as auth_models
-
 from bookie.models import Bookie
 
 
-# Create your models here.
-
-
 class Book(models.Model):
-    DEFAULT_BOOK_COVER = 'static/images/no_cover.jpg'
 
     CURRENT_YEAR = datetime.date.today().year
-    MIN_LEN_BOOK_DESCRIPTION = 100
-
     MIN_YEAR_ADDED_VALUE = 1000
+
+    MAX_LEN_BOOK_TITLE = 100
+    MAX_LEN_AUTHOR_NAME = 100
+
+    MIN_LEN_BOOK_DESCRIPTION = 100
+    MAX_LEN_BOOK_DESCRIPTION = 1_000
+
+    MAX_SERIES_NAME_LENGTH = 100
+    MIN_VALUE_FOR_NUMBER_SERIES = 1
+
     SUPER_USER_EMAIL = 'denny@gmail.com'
 
     cover_image = models.ImageField(
@@ -28,8 +29,7 @@ class Book(models.Model):
     )
 
     title = models.CharField(
-        unique=True,
-        max_length=100,
+        max_length=MAX_LEN_BOOK_TITLE,
         blank=False,
         null=True,
     )
@@ -37,6 +37,7 @@ class Book(models.Model):
     author = models.ForeignKey(
         'author.Author',
         on_delete=models.SET_NULL,
+        max_length=MAX_LEN_AUTHOR_NAME,
         blank=False,
         null=True,
     )
@@ -55,8 +56,6 @@ class Book(models.Model):
 
     )
 
-    # add Genre and cover image
-
     genres = models.ManyToManyField(
         'Genre.Genre',
         blank=False,
@@ -65,13 +64,33 @@ class Book(models.Model):
     )
 
     description = models.TextField(
-        max_length=1_000,
+        max_length=MAX_LEN_BOOK_DESCRIPTION,
         blank=False,
         null=True,
         help_text=f"Describe the book in at least {MIN_LEN_BOOK_DESCRIPTION} characters.",
         validators=[
             MinLengthValidator(MIN_LEN_BOOK_DESCRIPTION),
+            MaxLengthValidator(MAX_LEN_BOOK_DESCRIPTION)
         ]
+    )
+
+    name_of_series = models.CharField(
+        max_length=MAX_SERIES_NAME_LENGTH,
+        blank=True,
+        null=True,
+        verbose_name="Name of Series",
+        help_text='Add name of series only if there are pre/sequels to the book.\n'
+                  'Keep in mind this field is case-sensitive.'
+    )
+
+    series_number = models.IntegerField(
+        blank=True,
+        null=True,
+        verbose_name="Series number",
+        validators=([
+            MinValueValidator(MIN_VALUE_FOR_NUMBER_SERIES)
+        ]),
+        help_text="Required only if the book belongs to series."
     )
 
     added_by = models.ForeignKey(
@@ -80,13 +99,6 @@ class Book(models.Model):
         editable=False,
         null=True,
     )
-
-    def save(self, *args, **kwargs):
-
-        if not self.added_by:
-            self.added_by = kwargs.pop('user', None)
-
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.title} by {self.author}"
@@ -104,3 +116,28 @@ class Book(models.Model):
         return max([g.age_restriction for g in self.genres.all()])
 
 
+class BookRequestFromUserModel(models.Model):
+
+    user = models.ForeignKey(
+        'bookie.Bookie',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='book_requests'
+    )
+
+    title = models.CharField(
+        max_length=Book.MAX_LEN_BOOK_TITLE,
+    )
+    author_name = models.CharField(
+        max_length=Book.MAX_LEN_AUTHOR_NAME,
+    )
+
+    year_published = models.IntegerField(
+        validators=[MinValueValidator(0),
+                    MaxValueValidator(Book.CURRENT_YEAR)]
+    )
+
+    def __str__(self):
+
+        return (f"{self.title} by {self.author_name}Published in {self.year_published}.\n"
+                f"Request by {self.user.email}")

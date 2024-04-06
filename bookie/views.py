@@ -1,10 +1,9 @@
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
-from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse, JsonResponse
-from django.contrib import messages
+
 from django.shortcuts import render, redirect, get_object_or_404
+
 
 from bookie import forms as bookie_forms
 
@@ -63,6 +62,7 @@ class ProfileDetailView(DetailView):
 
         context['user'] = user
         context['profile'] = self.get_object()
+
         return context
 
 
@@ -81,22 +81,6 @@ class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         return self.request.user == self.get_object().user or self.request.user.is_superuser
 
-"""
-class ProfileDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = Bookie
-    success_url = reverse_lazy('login bookie')
-    template_name = 'bookies/delete_profile.html'
-
-    def get_object(self, queryset=None):
-        return get_object_or_404(Bookie, pk=self.request.user.pk)
-
-    def test_func(self):
-
-        user = self.get_object()
-
-        return self.request.user == user or self.request.user.is_superuser
-
-"""
 
 @login_required
 def delete_bookie(request, pk):

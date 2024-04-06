@@ -4,13 +4,23 @@ from django.db import models
 
 import datetime
 
-# Create your models here.
+
+
+class Country(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Countries"
+
 
 
 class Author(models.Model):
 
     MIN_AUTHOR_BIO_CHARS = 40
-
+    MIN_YEAR_BORN = 1_000
     CURRENT_YEAR = datetime.datetime.today().year
 
     name = models.CharField(
@@ -19,51 +29,70 @@ class Author(models.Model):
         null=True,
         blank=False,
         verbose_name="Author name",
-        error_messages={"unique": "Author with this name already exists."}
+    )
+
+    pseudonym = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
     )
 
     year_born = models.PositiveIntegerField(
         blank=False,
         null=False,
-        default=1_000,
+        default=CURRENT_YEAR,
         verbose_name="Author`s birth year",
         validators=[
-            MinValueValidator(1000),
+            MinValueValidator(MIN_YEAR_BORN),
             MaxValueValidator(CURRENT_YEAR)
         ]
     )
 
-    author_picture = models.ImageField(
-        upload_to="images/",
-        default='images/no_profile_pic.jpg',
+    country = models.ForeignKey(
+        
+        'author.Country',
+        on_delete=models.SET_NULL,
+        blank=False,
+        null=True,
     )
+
+
+    author_picture = models.ImageField(
+        upload_to="authors_pictures",
+        default='no_profile.png',
+    )
+
 
     authors_bio = models.TextField(
         max_length=1_000,
-        default='Born in',
-        help_text=f"A brief description of the author. Use at least {MIN_AUTHOR_BIO_CHARS} characters.",
+        help_text=f"Use at least {MIN_AUTHOR_BIO_CHARS} characters.",
         validators=[
             MinLengthValidator(MIN_AUTHOR_BIO_CHARS),
         ]
 
 
     )
+    @property
+    def get_name(self):
+        if self.pseudonym:
+            return f"{self.name}({self.pseudonym})"
+        else:
+            return self.name
 
-    def get_book_titles(self) -> list:
-        return [book.title for book in self.book_set.all()]
 
     def __str__(self):
-        return self.name
+        return self.get_name
 
     def get_book_categories(self):
         
         all_categories = {}
         for book in self.book_set.all():
-            for c in book.Genre.all():
+            for c in book.genres.all():
                 if c not in all_categories:
                     all_categories[c] = 0
                 all_categories[c] += 1
 
         return sorted(all_categories, key=lambda x: all_categories.get(x), reverse=True)
+
 
 

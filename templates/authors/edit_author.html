@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block main_content %}
+    {% load crispy_forms_tags %}
+
+    <body>
+        <div class="row col-md-6 mx-auto  card card-body text-center">
+            <form action="{% url 'edit author' pk=object.pk %}" enctype="multipart/form-data" method="post">
+            
+                {{ form|crispy }}
+                {% csrf_token %}
+                <input type="submit" class="btn btn-primary" 
+                value="Save Changes">
+            </form>
+        </div>
+    </body>
+
+{% endblock %}

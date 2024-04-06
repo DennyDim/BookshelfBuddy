@@ -6,7 +6,6 @@
   <head>
     <meta charset="UTF-8" />
       
-      {# TODO: Insert logo image #}
     <div class="title">
         <title>Bookshelf Buddy</title>
         <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/journal/bootstrap.min.css">
@@ -25,11 +24,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <!-- Search bar -->
-            <li class="nav-item">
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form>
+            <li class="nav-item">                
             </li>
         </ul>
         
@@ -52,15 +47,21 @@
                 <a class="nav-link" href="{% url 'login bookie' %}">Log into your account</a>
             </li>
             {% endif %}
-            <li class="nav-item">
-                <a class="nav-link" href="#">Categories</a>
-            </li>
+            {% if request.user.is_authenticated and not request.user.is_staff %}
+                <li class="nav-item">
+                <a class="nav-link" href="{% url 'request a book' %}">Request a book</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="{% url 'all bookies requests' %}">My requests</a>
+                </li>
+            {% endif %}
+        
         
       
             
             <!-- Link to the main page -->
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'all_writers' %}">Authors Statistics</a>
+                <a class="nav-link" href="{% url 'all_writers' %}">Authors</a>
             </li>
         
           {#  BUTTONS ONLY AVAILABLE TO STAFF MEMBERS #}
@@ -70,12 +71,18 @@
                         <img src="{% static 'images/add_button.png' %}" width="20px" alt="Some Image" class="nav-item">
                     </a>
                 </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'create new author' %}">Add Author
+                        <img src="{% static 'images/add_button.png' %}" width="20px" alt="Some Image" class="nav-item">
+                    </a>
+                </li>
             {% endif %}
         </ul>
     </div>
 </nav>
   </body>
-<div class="content">
+
 {% block main_content %}
 {% endblock %}
 </div>
@@ -84,17 +91,23 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h3>Footer Details</h3>
+                <h3>Often asked questions</h3>
                 <details class="footer-details">
-                    <summary>Details 1</summary>
-                    <p>This is the content of details 1.</p>
+                    <summary>Why do I need an account?</summary>
+                    <p>You need an account in order to keep track of all the books you
+                    want to read, have read. People with accounts can post ratings of the books
+                    they have read and share their review with the others.</p>
                 </details>
                 <details class="footer-details">
-                    <summary>Details 2</summary>
-                    <p>This is the content of details 2.</p>
+                    <summary>How do I rate a book?</summary>
+                    <p>First you need an account, then you have to select
+                    that you have read the book you want to rate. Then you`ll get the
+                    option to vote for the book. The rating goes from 1 to 10, with 10 being one
+                    of the best books you have read. We also suggest you hover  with your mouse 
+                        on the stars for a bit more fun :).</p>
                 </details>
                 <details class="footer-details">
-                    <summary>Details 3</summary>
+                    <summary>I can`t find a book.</summary>
                     <p>This is the content of details 3.</p>
                 </details>
                 <details class="footer-details">
@@ -109,3 +122,4 @@
         </div>
     </div>
 </footer>
+</html>

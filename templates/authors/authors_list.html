@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load static %}
 
-{% block main_content %}
+{% block main_content %}    
+    
+    
+    
     
     <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/journal/bootstrap.min.css">
-    
     <br>
     <div class="container">
         <div class="row justify-content-center">
@@ -14,9 +17,22 @@
                 <div>
                     <ul type="none">
                         {% for author in authors %}
-                            <li><h3>~ {{ author.name }}/{{ author.year_born }}/</h3></li>
+
+                            <li>
+                                <h3>
+                                    <a href="{% url 'author details' pk=author.pk%}" class="text-decoration-none">
+                                        <div class="d-flex align-items-center mb-3">
+                                        <img src="{{ author.author_picture.url}}" style="width: 20%; height: 20%; object-fit: cover;
+                                width: 90px; height: 90px;" class="profile-picture rounded-circle">
+                                            {{ author.get_name }}   / {{ author.year_born }}
+                                        </div>
+                                    </a>
+                                </h3>
+                                
+                            </li>
                             
-                            <li>Total books added: {{ author.get_book_titles|length }}</li>
+                            
+                            <li>Total books added: {{ author.book_set.all|length }}</li>
                             <ul>
                                 {% for category in author.get_book_categories %}
                                     <li>{{ category }}</li>
@@ -25,10 +41,78 @@
                         {% endfor %}
                     </ul>
                 </div>
+            </div>
+        </div>
+    </div>
+    
+            
+                {% if books_by_anonymous|length > 0 %}
+                <div class="container text-center">
+                <h3>----------------------------</h3>
+                <h4>Books by Anonymous:</h4>
+                    </div>
+                <ul type="none">
+                    {% for book in books_by_anonymous %}
+                        <li><a href="{% url 'book details' pk=book.pk %}" class="text-decoration-none">
+                            <div class="card container text-center">
+                                <div class="row g-10">
+                                    <div class="col-md-2 d-flex align-items-center">
+                                <img src="{{ book.cover_image.url }}" class="img-fluid rounded-start centered" alt="Book Cover">
+                                    </div>
+                            <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Title: {{ book.title }} / {{ book.year_published }}</h5>
+                                    <p class="card-text">
+                                    {% for genre in book.genres.all %}
+                                        {{ genre.name }}
+                                            {% if not forloop.last %}
+                                                /
+                                            {% endif %}
+                                    {% endfor %}
+                                    </p>
+                                <p class="card-text summary">Summary: {{ book.description|truncatechars:40}}</p>
+                            </div>
+                        </div>
+                    </div>
+            </div></a></li>
+                  </ul>
+                {% endfor %}
+            {% endif %}
+            
                 
                 
             </div>
         </div>
     </div>
+    
+    {# BUTTONS TO SCROLL AMONG PAGES #}
+    <div class="row">
+    <div class="col-lg-12">
+        <div class="card d-flex align-items-center">
+            <div class="card-body">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href='{% url 'all_writers_paginated' page_obj.previous_page_number %}'>Previous Authors</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">Previous Authors</span></li>
+                    {% endif %}
+                    
+                    {% for p in paginator.page_range %}
+                        <li class="page-item"><a class="page-link" href='{% url 'all_writers_paginated' p %}'>{{ p }}</a></li>
+                    {% endfor %}
+                
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href='{% url 'all_writers_paginated' page_obj.next_page_number %}'>Next Authors</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">Next Authors</span></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
 
 {% endblock %}

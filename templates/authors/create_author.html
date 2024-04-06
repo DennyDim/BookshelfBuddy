@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block main_content %}
+    
+    {% load crispy_forms_tags %}
+        <title>New Author</title>
+        <body>
+            <div class="row col-md-6 mx-auto  card card-body text-center">
+                <form action="{% url 'create new author' %}" enctype="multipart/form-data" method="post">
+                    {{ form|crispy }}
+                    {% csrf_token %}
+                
+                    <input type="submit" class="btn btn-primary" value="Add new author">
+                </form>
+            </div>
+        </body>
+    
+{% endblock %}
