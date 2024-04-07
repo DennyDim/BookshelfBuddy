@@ -1,14 +1,16 @@
-
+from django.contrib import admin
+from django.contrib.admin import SimpleListFilter
 from django.core.validators import MinLengthValidator, MinValueValidator, MaxValueValidator, MaxLengthValidator
 from django.db import models
 
 import datetime
 
+from django.db.models import F, Count
+
 from bookie.models import Bookie
 
 
 class Book(models.Model):
-
     CURRENT_YEAR = datetime.date.today().year
     MIN_YEAR_ADDED_VALUE = 1000
 
@@ -93,10 +95,26 @@ class Book(models.Model):
         help_text="Required only if the book belongs to series."
     )
 
+
     added_by = models.ForeignKey(
         'bookie.Bookie',
         on_delete=models.SET_NULL,
-        editable=False,
+        null=True,
+    )
+
+    added_on_date = models.DateField(
+        blank=True,
+        null=True,
+    )
+
+    last_edited_by_email = models.CharField(
+        max_length=Bookie.MAX_EMAIL_LENGTH,
+        null=True,
+        blank=True,
+    )
+
+    last_edited_on_date = models.DateField(
+        blank=True,
         null=True,
     )
 
@@ -108,7 +126,8 @@ class Book(models.Model):
         total_reviews = self.book_reviews.all()
         if total_reviews:
             total_rating = sum(rat.rating for rat in total_reviews)
-            return total_rating / len(total_reviews)
+            result = total_rating / len(total_reviews)
+            return result
         return 0
 
     @property
@@ -116,28 +135,47 @@ class Book(models.Model):
         return max([g.age_restriction for g in self.genres.all()])
 
 
-class BookRequestFromUserModel(models.Model):
+class SortByAddedOnDate(SimpleListFilter):
+    title = "Added on"
+    parameter_name = 'added_on_date'
 
-    user = models.ForeignKey(
-        'bookie.Bookie',
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='book_requests'
-    )
+    def lookups(self, request, model_admin):
+        return (
+            ('newly_added', "Newest Books"),
+            ('old_books', 'Oldest Books')
+        )
 
-    title = models.CharField(
-        max_length=Book.MAX_LEN_BOOK_TITLE,
-    )
-    author_name = models.CharField(
-        max_length=Book.MAX_LEN_AUTHOR_NAME,
-    )
+    def queryset(self, request, queryset):
+        if not self.value():
+            return queryset
 
-    year_published = models.IntegerField(
-        validators=[MinValueValidator(0),
-                    MaxValueValidator(Book.CURRENT_YEAR)]
-    )
+        elif self.value() == "newly_added":
+            return queryset.order_by("-added_on_date")
+        elif self.value() == "old_books":
+            return queryset.order_by("added_on_date")
 
-    def __str__(self):
 
-        return (f"{self.title} by {self.author_name}Published in {self.year_published}.\n"
-                f"Request by {self.user.email}")
+class FilterBookEditedOnDate(SimpleListFilter):
+    title = "Edit date"
+    parameter_name = 'last_edited_on_date'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('newly_edited', "Newest edits"),
+            ('first_edited', 'Oldest edits')
+        )
+
+    def queryset(self, request, queryset):
+        if not self.value():
+            return queryset
+
+        elif self.value() == "newly_edited":
+            return queryset.order_by("-last_edited_on_date")
+        elif self.value() == "first_edited":
+            return queryset.order_by("last_edited_on_date")
+
+
+class BookAdmin(admin.ModelAdmin):
+    list_display = ('added_on_date', 'title',)
+    list_filter = (SortByAddedOnDate, FilterBookEditedOnDate)
+    search_fields = ('title', 'author__name')

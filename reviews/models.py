@@ -1,3 +1,5 @@
+from django.contrib import admin
+from django.contrib.admin import SimpleListFilter
 from django.utils import timezone
 
 import time
@@ -63,3 +65,28 @@ class ReviewAndRating(models.Model):
 
     def __str__(self):
         return self.review
+
+class FilterByRating(SimpleListFilter):
+    title = "Rating"
+    parameter_name = "rating"
+
+    def lookups(self, request, model_admin):
+        return (
+            ("high_rated", "Highest Ratings"),
+            ("low_rated", "Lowest Ratings")
+        )
+
+    def queryset(self, request, queryset):
+        if not self.value():
+            return queryset
+        elif self.value() == "high_rated":
+            return queryset.filter(rating__gt=0).order_by("-rating")
+
+        elif self.value() == "low_rated":
+            return queryset.filter(rating__gt=0).order_by("rating")
+
+
+class ReviewAndRatingAdmin(admin.ModelAdmin):
+    list_display = ('rating', "date_added", "user", "book", "rating")
+    list_filter = (FilterByRating, )
+    search_fields = ("user", "book")

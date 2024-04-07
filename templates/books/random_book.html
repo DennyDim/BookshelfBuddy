@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+
+{% block main_content %}
+
+    
+    <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/journal/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/reviews.css' %}">
+
+
+
+
+   
+
+    <form method="get" action="{% url 'book details' pk=book.pk%}" enctype="multipart/form-data">
+    
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <img src="{{ book.cover_image.url }}" alt="Cover Image" style="width: 300px;">
+                </div>
+            
+                <div class="col-md-8">
+                    <ul class="list-unstyled">
+
+                        <li><div class="container row col">
+                            <h4><span class="text-primary">Title:
+                            </span> {{ book.title }}</h4>
+                        </div></li>
+
+
+
+                        <li><div class="container row col">
+                            <h4><span class="text-primary">Author:
+                            </span> {% if book.author %}{{ book.author }}
+                            {% else %}Anonymous{% endif %}</h4>
+                        </div></li>
+
+
+                        <li><div class="container row col">
+                            <h4><span class="text-primary">Published in:
+                            </span> {{ book.year_published }}</h4>
+                        </div></li>
+
+
+                        <li><div class="container row col">
+                            <h4><span class="text-primary">Genres:
+                            </span> {% if book.category.all|length == 1 %}
+                                    {{ book.category.name }}
+                                    {% else %}
+                                    {% for genre in book.genres.all %}
+                                        {{ genre.name }}
+                                        {% if not forloop.last %}
+                                            /
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}</h4>
+                        </div></li>
+
+                        <li><div class="container row col">
+                            <h4 class=""><span class="text-primary">Summary:
+                            </span><p class="text-wrap text-break">{{ book.description }}</p></h4>
+                        </div></li>
+
+                        <li><div class="container row col">
+                            <h6 class="text-secondary">Added By:
+                             {% if not book.added_by %}Anonymous{% else %}
+                                <a href="{% url 'bookie profile' pk=book.added_by.pk %}">{{ book.added_by }}</a>
+                                {% endif %}</h6>
+                        </div></li>
+                </ul>
+
+                <br>
+                <div class="container row col">
+                            <h4><span class="text-primary">Overall rating:
+                            </span> {{ book.overall_rating|floatformat:1 }}</h4>
+                </div>
+
+
+
+                </div>
+            </div>
+    
+        </div>
+    </form>
+    
+    
+  <div class="text text-center" style="background-color: lightcoral;" >
+    <a style="color: beige;"
+            href="{% url 'book details' pk=book.pk %}">Get more details about the book.</a>
+   </div>
+{% endblock %}

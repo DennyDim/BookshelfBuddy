@@ -47,15 +47,7 @@
                 <a class="nav-link" href="{% url 'login bookie' %}">Log into your account</a>
             </li>
             {% endif %}
-            {% if request.user.is_authenticated and not request.user.is_staff %}
-                <li class="nav-item">
-                <a class="nav-link" href="{% url 'request a book' %}">Request a book</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="{% url 'all bookies requests' %}">My requests</a>
-                </li>
-            {% endif %}
-        
+                   
         
       
             
@@ -107,16 +99,22 @@
                         on the stars for a bit more fun :).</p>
                 </details>
                 <details class="footer-details">
-                    <summary>I can`t find a book.</summary>
-                    <p>This is the content of details 3.</p>
+                    <summary>I don`t want to see certain reviews.</summary>
+                    <p>You can easily choose what type of reviews to see. Simply click on the box next to 
+                    'Sort reviews by type' and choose the type of reviews you wish to see." Then click on our
+                    button 'Sort' and you`ll only get the selected reviews.</p>
                 </details>
                 <details class="footer-details">
-                    <summary>Details 4</summary>
-                    <p>This is the content of details 4.</p>
+                    <summary>What does the button 'I don`t know what to read' do?'</summary>
+                    <p>This is a special button for all our authorised users who don`t know what
+                    they want to read. Our powerful servers scan your libraries 'Want to read' and
+                    'Have Read' and generate a book that doesn`t exist there.</p>
                 </details>
                 <details class="footer-details">
-                    <summary>Details 5</summary>
-                    <p>This is the content of details 5.</p>
+                    <summary>I click on 'I don`t know what to read' button and nothing is happening</summary>
+                    <p>This is because you have read and/or put all our available books in your
+                        want to read library. We apologise for this inconvenience and we would encourage you to
+                         track our site for any new books.</p>
                 </details>
             </div>
         </div>

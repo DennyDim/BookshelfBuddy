@@ -1,5 +1,5 @@
-
-
+from django.contrib import admin
+from django.contrib.admin import SimpleListFilter
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.db.models import OneToOneField
@@ -39,12 +39,21 @@ class Bookie(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
+    MAX_EMAIL_LENGTH = 120
+    DEFAULT_AGE = 18
+
     email = models.EmailField(
+        max_length=MAX_EMAIL_LENGTH,
         unique=True,
     )
     age = models.PositiveIntegerField(
-        default=18,
+        default=DEFAULT_AGE,
         help_text="This field is important for our site."
+    )
+
+    date_joined = models.DateTimeField(
+        blank=True,
+        null=True
     )
 
     USERNAME_FIELD = 'email'
@@ -60,6 +69,9 @@ class Bookie(AbstractBaseUser, PermissionsMixin):
 
 class BookieProfile(models.Model):
 
+    MAX_COUNTRY_LENGTH = 50
+    MAX_BIO_LENGTH = 300
+
     user = OneToOneField(
         Bookie,
         on_delete=models.CASCADE,
@@ -67,7 +79,7 @@ class BookieProfile(models.Model):
     )
 
     country = models.CharField(
-        max_length=100,
+        max_length=MAX_COUNTRY_LENGTH,
         null=True,
         blank=True,
     )
@@ -78,6 +90,7 @@ class BookieProfile(models.Model):
     )
 
     bio = models.TextField(
+        max_length=MAX_BIO_LENGTH,
         help_text="Share something about yourself.",
         null=True,
         blank=True
@@ -97,13 +110,36 @@ class BookieProfile(models.Model):
         related_name="have_read"
     )
 
+
     def get_bookie_name(self):
         return self.user.email.split("@")[0].capitalize()
-
-    def greet_on_main_page(self):
-        return f"Hello, {self.get_bookie_name}"
 
     def get_profile_caption(self):
         return f"{self.get_bookie_name()}`s Profile"
 
 
+class GetUsersByDateJoined(SimpleListFilter):
+
+    title = "Date Joined"
+    parameter_name = 'date_joined'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('new_users', "New users"),
+            ('old_users', 'Old users')
+        )
+
+    def queryset(self, request, queryset):
+        if not self.value():
+            return queryset
+
+        elif self.value() == "new_users":
+            return queryset.order_by("-date_joined")
+        elif self.value() == "old_users":
+            return queryset.order_by("date_joined")
+
+
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('date_joined', 'email',)
+    list_filter = (GetUsersByDateJoined, )
+    search_fields = ('email', )

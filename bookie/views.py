@@ -15,13 +15,19 @@ from bookie.models import Bookie, BookieProfile
 
 
 from bookie.forms import BookieProfileForm, BookieDisplayProfileForm
+from datetime import datetime
 
-# Create your views here.
 
 class RegisterBookieView(CreateView):
     template_name = "bookies/registration.html"
     form_class = bookie_forms.BookieRegistrationForm
     success_url = reverse_lazy("login bookie")
+
+    def form_valid(self, form):
+
+        form.instance.date_joined = datetime.now()
+
+        return super().form_valid(form)
 
 
 class BookieLoginView(LoginView):
@@ -32,11 +38,7 @@ class BookieLoginView(LoginView):
 
 def logout_view(request):
     logout(request)
-    login_url = reverse('login bookie')
-    return render(request, "bookies/delete_profile.html")
-
-
-# CRUD OPERATIONS WITH THE PROFILE
+    return redirect("login bookie")
 
 
 class ProfileDetailView(DetailView):

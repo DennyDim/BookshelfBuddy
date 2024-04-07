@@ -7,16 +7,55 @@
     
     <link rel="stylesheet" href="{% static 'css/genre_box.css' %}" type="text/css">
     
+    {% if current_user.is_authenticated %}
+    <h1 class="text text-center">Hello, {{ current_user.profile.get_bookie_name }}</h1>
+    {% endif %}
+    
     <div class="row">
     <div class="col">
         <div class="card-body">
-            <h2 class="card-title">Search for book by title:</h2>
+            <h5 class="card card-body" style="border-color: lightcoral ">
             <form method="get" class="d-flex">
                 {{ filter_by_title_form.form }}
                 <button type="submit" class="btn align-items-center">Search</button>
+                
             </form>
-              
+                </h5>
+            
+        </div>
+       
+        {% if current_user.is_authenticated %}
+        
+        <div class="d-flex justify-content-end align-items-center">
+            <form method="get" action="{% url 'generate random book' %}">
+                <button type="submit" class="btn btn-primary">I don`t know what to read</button>
+        </form>
+        {% endif %}
+</div>
+
+    <br>
+    </div>
+    </div>
+    <div>
+     
+   
+    </div>
+    {% if search_results|length != all_books_added|length %}
+        <ul type="none" class="card card-body" style="border-color: lightcoral">
+        <h2 class="text text-center">Results from your search:</h2>
+        {% for s_book in search_results %}
+            <li><h3><a href="{% url 'book details' pk=s_book.pk %}">{{ s_book }}</a></h3></li>
+        {% empty %}
+            <h3 class="text text-center">Sorry, we couldn`t find anything :(</h3>
+        {% endfor %}
+        </ul>
+        
+
+        <h1>----------------------------------------</h1>
+    {% endif %}
     
+    
+        
     <br><br>
     <div class="text text-center">
         <h1>Our genres:</h1>
@@ -24,6 +63,8 @@
     </div>
     {% if all_books_added|length == 0 %}
     <h1 class="row justify-content-center">No books added yet :(</h1>
+        
+        
     
     {% else %}
     
@@ -61,7 +102,8 @@
                                             </div>
                                             </div>
                                         </div></a></li>
-                    
+                            {% elif not book.required_age and not current_user.is_authenticated %}
+                                    {{ book }}
                         
                         {% endif %}
                     {% endfor %}

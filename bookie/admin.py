@@ -10,16 +10,17 @@ from reviews import models as review_models
 # Register your models here.
 
 
-admin.site.register(book_models.Book)
+admin.site.register(book_models.Book, book_models.BookAdmin)
+
 
 admin.site.register(author_models.Author)
 admin.site.register(author_models.Country)
 
 
-admin.site.register(bookie_models.Bookie)
+admin.site.register(bookie_models.Bookie, bookie_models.UserAdmin)
 admin.site.register(bookie_models.BookieProfile)
 
 
 admin.site.register(category_models.Genre)
 
-admin.site.register(review_models.ReviewAndRating)
+admin.site.register(review_models.ReviewAndRating, review_models.ReviewAndRatingAdmin)

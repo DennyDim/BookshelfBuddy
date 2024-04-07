@@ -17,12 +17,16 @@ from bookie.models import Bookie
 
 
 # Here I filter the categories
-def get_filtered_categories(user_id: int):
+def get_filtered_categories(user: Bookie):
 
     genres = Genre.objects.all()
-    user = get_object_or_404(Bookie, pk=user_id)
 
-    if user.is_authenticated:
+    try:
+        user = get_object_or_404(Bookie, pk=user.pk)
+    except AttributeError:
+        user = None
+
+    if user is not None:
         if user.is_staff:
             filtered_categories = genres
         else:

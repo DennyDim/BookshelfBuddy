@@ -13,6 +13,7 @@ def create_profile(sender, instance, created, **kwargs):
         BookieProfile.objects.create(user=instance)
 
 
+
 @receiver(post_delete, sender=Bookie)
 def delete_the_associated_profile(sender, instance, **kwargs):
     try:
