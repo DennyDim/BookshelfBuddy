@@ -20,10 +20,8 @@ from book.models import Book
 from reviews.filters import FilterReviewByType
 from book.filters import BookFilterByTitle
 
-
 from bookie.models import BookieProfile, Bookie
 from reviews.models import ReviewAndRating
-
 
 from datetime import datetime
 
@@ -31,7 +29,6 @@ from reviews.models import ReviewAndRating
 
 
 class AddBookView(UserPassesTestMixin, CreateView):
-
     model = Book
     form_class = BookForm
     template_name = "books/add_book.html"
@@ -54,8 +51,8 @@ class AddBookView(UserPassesTestMixin, CreateView):
         elif series_number and not name_of_series:
             raise ValidationError("Please define the name of the series as well.")
         elif name_of_series and series_number and self.model.objects.filter(
-            author=form.cleaned_data['author'], name_of_series=name_of_series, series_number=series_number,
-                    ).exists():
+                author=form.cleaned_data['author'], name_of_series=name_of_series, series_number=series_number,
+        ).exists():
             raise ValidationError(f"Book № {series_number} already added to series {name_of_series}.")
 
         form.instance.added_by = self.request.user
@@ -75,7 +72,6 @@ class BookUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.request.user == book.added_by or self.request.user.is_superuser
 
     def form_valid(self, form):
-
         current_title = form.cleaned_data['title']
         current_author = form.cleaned_data['author']
 
@@ -102,7 +98,6 @@ class BookDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 
 class BookDetailView(DetailView):
-
     model = Book
     form_class = BookForm
     template_name = 'books/book_details.html'
@@ -115,7 +110,7 @@ class BookDetailView(DetailView):
         current_book = self.get_object()
         current_user = self.request.user
 
-        all_reviews = ReviewAndRating.objects.filter(book=current_book, user=current_user)
+        all_reviews = ReviewAndRating.objects.filter(book=current_book)
 
         filter_review_by_type = FilterReviewByType(
             self.request.GET, queryset=all_reviews
@@ -124,17 +119,14 @@ class BookDetailView(DetailView):
         all_reviews = filter_review_by_type.qs
 
         if current_book.name_of_series:
-            books_from_the_same_series = Book.objects.filter(name_of_series=current_book.name_of_series, author=current_book.author)
+            books_from_the_same_series = Book.objects.filter(name_of_series=current_book.name_of_series,
+                                                             author=current_book.author)
 
-        if isinstance(current_user, AnonymousUser):
+        try:
+            current_review = ReviewAndRating.objects.get(book=current_book, user=current_user)
+
+        except ReviewAndRating.DoesNotExist:
             current_review = None
-
-        else:
-            try:
-                current_review = ReviewAndRating.objects.get(book=current_book, user=current_user)
-
-            except ReviewAndRating.DoesNotExist:
-                current_review = None
 
         context['book'] = self.get_object()
         context['current_user'] = current_user
@@ -143,7 +135,6 @@ class BookDetailView(DetailView):
         context['books_from_the_same_series'] = books_from_the_same_series
         context['all_reviews'] = all_reviews
         context['filer_by_review_type'] = filter_review_by_type
-
 
         return context
 
@@ -209,7 +200,6 @@ class AddBookToWishlistView(View):
         return redirect('book details', pk=book_id)
 
 
-
 @login_required
 def generate_random_book(request):
     current_user = request.user
@@ -217,7 +207,6 @@ def generate_random_book(request):
     books_we_can_generate = Book.objects.exclude(
         Q(have_read__user=current_user) | Q(want_to_read__user=current_user)
     )
-
 
     if books_we_can_generate.exists():
         random_book = books_we_can_generate.order_by("?").first()

@@ -66,6 +66,7 @@ class ReviewAndRating(models.Model):
     def __str__(self):
         return self.review
 
+
 class FilterByRating(SimpleListFilter):
     title = "Rating"
     parameter_name = "rating"

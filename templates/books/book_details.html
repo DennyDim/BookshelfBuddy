@@ -319,9 +319,9 @@
         <div class="col-md-8">
         <br><br>
          <h2 class="text-center">All reviews({{ book.book_reviews.all|length }})</h2>
-            {% for review in all_reviews %}
+            {% for review in all_reviews.all %}
                 
-                {% if review.review %}
+                {#  {% if review.review %} #}
                     <div class="review">
                     <div class="reviews card mb-3 type-border-{{ review.type }}">
                         <div class="card-body">
@@ -342,7 +342,7 @@
                             </div>
                         </div>
                     </div>
-                {% endif %}
+                {# {% endif %} #}
             {% empty %}
                 <h3 class="text text-center" style="color: maroon">No reviews yet.</h3>
             {% endfor %}

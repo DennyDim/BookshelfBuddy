@@ -10,32 +10,33 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <h1 class="text-center">{{ profile.get_profile_caption }}</h1>
+                <h1 class="text-center">{{ current_profile.get_profile_caption }}</h1>
                 <form method="post" autocomplete="off" action="{% url "bookie profile" pk=object.pk %}"
                  enctype="multipart/form-data">
                     
                 <ul type="none">
-                    <img src='{{ profile.profile_picture.url }}' alt="Profile Picture" style="width: 200px">
+                    <img src='{{ current_profile.profile_picture.url }}' alt="Profile Picture" style="width: 200px">
                 
-                    <li>Email: {{ object.user.email }}</li>
-            
-                    <li>Age: {{ object.user.age }}</li>
+                    <li>Email: {{ current_email }}</li>
+                  
+                    <li>Age: {{ current_profile.user.age }}</li>
                 
-                    <li>From: {% if profile.country %}{{ profile.country }}
+                    <li>From: {% if current_profile.country %}{{ current_profile.country }}
                         {% else %}Not set{% endif %}</li>
-                    <li>About me: {{ profile.bio }}</li>
+                    <li>About me: {% if current_profile.bio %}{{ current_profile.bio }}{% else %}
+                    The user hasn`t shared anything yet.{% endif %}</li>
                 
                     {# CRUD OPERATIONS FOR SUPERUSERS AND OWNERS OF THE PROFILE #}
-                    {% if request.user.is_superuser or request.user == user %}
+                    {% if request.user.is_superuser or current_profile.pk == current_user.pk %}
                         <a class="btn btn-primary container row justify-content-center" 
-                           href="{% url 'edit bookie profile' pk=object.pk %}">Edit My Profile</a>
+                           href="{% url 'edit bookie profile' pk=request.user.pk %}">Edit My Profile</a>
 
                     
                         
                         
-                        <form method="post" action="{% url 'delete bookie profile' pk=user.pk%}">
+                        <form  method="POST" action="{% url 'delete bookie profile' pk=current_user.pk %}">
                             {% csrf_token %}
-                        <button type="submit" onclick="return confirmDelete();"
+                        <button type="submit" {# onclick="return confirmDelete();" #}
                         class="btn container row">Delete My Profile</button>
                         </form>
                         
