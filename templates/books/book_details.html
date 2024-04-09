@@ -18,6 +18,7 @@
     <form method="get" action="{% url 'book details' pk=book.pk%}" enctype="multipart/form-data">
     
         <div class="container">
+        <br><br><br><br>
             <div class="row">
                 <div class="col-md-4 text-center">
                     <img src="{{ book.cover_image.url }}" alt="Cover Image" style="width: 300px;">
@@ -191,7 +192,7 @@
                             </form>
                         </div>
                     {% endif %}
-
+       
                 {% elif book in current_user.profile.want_to_read.all %}
 
                     {# he can add it to the have_read library #}
@@ -206,12 +207,13 @@
                         </div>
                     </div>
 
-
+                    
                 {# In case the user hasn`t added the book in any of his libraries #}
                 {% else %}
-
+ 
                     {# he ca add to want_to_read library #}
                     <div class="container">
+                    <br><br><br>
                         <div class="row justify-content-center">
                             <div class="col-auto">
 
@@ -301,8 +303,8 @@
     <div class="row">
 
         <div class="card-body">
-            <h5 class="card card-body d-flex" style="border-color: lightcoral ">
-            <form method="get" class="d-flex">
+            <h5 class=" card-body d-flex">
+            <form method="get" class="d-fex">
                 {{ filer_by_review_type.form|crispy }}
                 <button type="submit" class="btn align-items-center">Sort</button>
             </form>

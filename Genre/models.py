@@ -7,6 +7,11 @@ from django.db import models
 
 class Genre(models.Model):
 
+    genre_image = models.ImageField(
+        upload_to='genre_images',
+        default='no_cover.jpg'
+    )
+
     name = models.CharField(
         max_length=100,
         unique=True,
@@ -37,11 +42,12 @@ class Genre(models.Model):
         else:
             return ''
 
-    def get_book_count(self):
-        return self.book_set.count()
+
+
+
 
     def __str__(self):
-        return f"{self.name}{self.get_age_restriction}\nBooks: {self.get_book_count()}"
+        return f"{self.name}{self.get_age_restriction}\nBooks: {self.book_set.count()}"
 
 
 

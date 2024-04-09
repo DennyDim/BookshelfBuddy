@@ -10,7 +10,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <h1 class="text-center">{{ current_profile.get_profile_caption }}</h1>
+                <h1 class="text-center">{{ current_profile.user_id }}</h1>
                 <form method="post" autocomplete="off" action="{% url "bookie profile" pk=object.pk %}"
                  enctype="multipart/form-data">
                     
@@ -18,7 +18,7 @@
                     <img src='{{ current_profile.profile_picture.url }}' alt="Profile Picture" style="width: 200px">
                 
                     <li>Email: {{ current_email }}</li>
-                  
+
                     <li>Age: {{ current_profile.user.age }}</li>
                 
                     <li>From: {% if current_profile.country %}{{ current_profile.country }}
@@ -27,25 +27,28 @@
                     The user hasn`t shared anything yet.{% endif %}</li>
                 
                     {# CRUD OPERATIONS FOR SUPERUSERS AND OWNERS OF THE PROFILE #}
-                    {% if request.user.is_superuser or current_profile.pk == current_user.pk %}
+                    {% if current_profile.pk == current_user.pk %}
                         <a class="btn btn-primary container row justify-content-center" 
                            href="{% url 'edit bookie profile' pk=request.user.pk %}">Edit My Profile</a>
-
-                    
                         
-                        
-                        <form  method="POST" action="{% url 'delete bookie profile' pk=current_user.pk %}">
+                                        
+                        <form  method="post" action="{% url 'delete bookie profile' pk=current_user.pk %}">
                             {% csrf_token %}
-                        <button type="submit" {# onclick="return confirmDelete();" #}
-                        class="btn container row">Delete My Profile</button>
+                            <button type="submit" onclick="confirmDelete();"
+                            class="btn container row">Delete My Profile</button>
                         </form>
                         
-
-                {% endif %}
+                    {% endif %}
+                        {% if current_user.is_superuser and current_profile.pk != current_user.pk %}
+                          <form action="{% url 'delete bookie profile' pk=current_profile.pk %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary" onclick="return confirmDelete();"
+                            >Delete User with ID {{ current_profile.pk }}</button>
+                            </form>
+                        {% endif %}
                 
-                    {% csrf_token %}
                 </ul>
-                    
+               
                 </form>
             </div>
         </div>
@@ -90,9 +93,7 @@
     
       <script>
         function confirmDelete() {
-            if (confirm("Are you sure you want to delete your profile?")) {
-                document.getElementById("delete-profile-form").submit();
-            }
+            return (confirm("Are you sure you want to delete your profile?"));
         }
     </script>
     

@@ -38,7 +38,7 @@ class Book(models.Model):
 
     author = models.ForeignKey(
         'author.Author',
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         max_length=MAX_LEN_AUTHOR_NAME,
         blank=False,
         null=True,
@@ -132,7 +132,12 @@ class Book(models.Model):
 
     @property
     def required_age(self):
-        return max([g.age_restriction for g in self.genres.all()])
+        age = 0
+        for genre in self.genres.all():
+            if genre.age_restriction and genre.age_restriction > age:
+                age = genre.age_restriction
+
+        return age
 
 
 class SortByAddedOnDate(SimpleListFilter):

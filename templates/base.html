@@ -8,12 +8,14 @@
       
     <div class="title">
         <title>Bookshelf Buddy</title>
-        <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/journal/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="{% static 'css/stars.css' %}">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/journal/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
     </div>
   </head>
   <body>
+  
+ 
  
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="{% url 'main page' %}">Bookshelf Buddy</a>
@@ -27,10 +29,37 @@
             <li class="nav-item">                
             </li>
         </ul>
+    
+            
         
         <ul class="navbar-nav ml-auto">
-           
-            {% if  user.is_authenticated %}
+        
+        
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'all_writers' %}">Authors</a>
+            </li>
+                          
+        
+        
+          {#  BUTTONS ONLY AVAILABLE TO STAFF MEMBERS #}
+            {% if request.user.is_staff %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'add book' %}">Add Book
+                        <img src="{% static 'images/pink_add_button.png' %}" width="20px" alt="Some Image" class="nav-item">
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'create new author' %}">Add Author
+                        <img src="{% static "images/pink_add_button.png" %}" width="20px" alt="Some Image" class="nav-item">
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+        
+        <div class="navbar-nav ms-auto">
+          
+                {% if  user.is_authenticated %}
              <li class="nav-item">
                 <a class="nav-link" href="{% url 'bookie profile' pk=user.pk %}">Your Profile</a>
             </li>
@@ -47,30 +76,9 @@
                 <a class="nav-link" href="{% url 'login bookie' %}">Log into your account</a>
             </li>
             {% endif %}
-                   
-        
-      
-            
-            <!-- Link to the main page -->
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'all_writers' %}">Authors</a>
-            </li>
-        
-          {#  BUTTONS ONLY AVAILABLE TO STAFF MEMBERS #}
-            {% if request.user.is_staff %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'add book' %}">Add Book
-                        <img src="{% static 'images/add_button.png' %}" width="20px" alt="Some Image" class="nav-item">
-                    </a>
-                </li>
                 
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'create new author' %}">Add Author
-                        <img src="{% static 'images/add_button.png' %}" width="20px" alt="Some Image" class="nav-item">
-                    </a>
-                </li>
-            {% endif %}
-        </ul>
+           
+        </div>
     </div>
 </nav>
   </body>
@@ -79,7 +87,7 @@
 {% endblock %}
 </div>
 
-<footer class="bg-dark text-light">
+<footer class="">
     <div class="container">
         <div class="row">
             <div class="col-md-12">

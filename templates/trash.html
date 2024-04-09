@@ -23,49 +23,31 @@
 
 {% endblock %}
 
-
-
-
-{% if not current_user.is_authenticated %}
-                <h1>You aren`t auth</h1>
-                <a href="{% url 'login bookie' %}">Open this link to login/create your own account</a>
-
-            {% else %}
-                <h1>You are auth</h1>
-                {% if book in current_user.want_to_read.all and book not in current_user.have_read.all %}
-                    <h1>You have added it to want to read</h1>
-
-                    {# Therefore you can add it to have_read library #}
-
-                    <form action="{% url 'add to already read' %}" method="post">
-                        {% csrf_token %}
-
-                        <input type="hidden" name="book_id" value="{{ book.pk }}">
-                        <button class="btn" type="submit">
-                        I have read this book</button>
-                    </form>
-
-
-                {% elif book in current_user.have_read.all %}
-                    <h1>You have added it to have read</h1>
-                    {# WE MOVE TO THE REVIEWS #}
-
-                    {% if not current_review.has_voted%}
-                        <h1>You haven`t voted yet</h1>
-
-                        {# The user hasn`t voted yet #}
-
-                        
-                    {% else %}
-                        <h1>You have voted.</h1>
-                        {# If the user had voted, he can only edit/delete his review #}
-
-                        
-                    {% endif %}
-                {% else %}
-                    {# The book doesnt exist in either of the libraries #}
-
-                    <h1>You haven`t added it anywhere</h1>
+{% for book in books_by_anonymous %}
+                        <li><a href="{% url 'book details' pk=book.pk %}" class="text-decoration-none">
+                            <div class="card container text-center">
+                                <div class="row g-10">
+                                    <div class="col-md-2 d-flex align-items-center">
+                                <img src="{{ book.cover_image.url }}" class="img-fluid rounded-start centered" alt="Book Cover">
+                                    </div>
+                            <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Title: {{ book.title }} / {{ book.year_published }}</h5>
+                                    <p class="card-text">
+                                    {% for genre in book.genres.all %}
+                                        {{ genre.name }}
+                                            {% if not forloop.last %}
+                                                /
+                                            {% endif %}
+                                    {% endfor %}
+                                    </p>
+                                <p class="card-text summary">Summary: {{ book.description|truncatechars:40}}</p>
+                            </div>
+                        </div>
+                    </div>
+            </div></a></li>
+                  </ul>
+                {% endfor %}
                     
                     
                     

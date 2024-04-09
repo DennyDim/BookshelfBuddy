@@ -60,7 +60,7 @@ class BookieProfileForm(forms.ModelForm):
 
         widgets = {
             'bio': forms.Textarea(
-                attrs={'placeholder': 'Share something about yourself! |form'}
+                attrs={'placeholder': 'Share something about yourself!'}
             ),
             'country': forms.TextInput(
                 attrs={'placeholder': 'Share where you come from...'}
@@ -72,3 +72,9 @@ class BookieDisplayProfileForm(forms.ModelForm):
     class Meta:
         model = BookieProfile
         fields = ['profile_picture', 'bio', 'country', 'have_read', 'want_to_read']
+
+
+class DeleteBokieForm(forms.Form):
+    class Meta:
+        model = Bookie
+        fields =('__all__')

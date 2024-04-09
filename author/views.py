@@ -25,15 +25,6 @@ class AuthorsListView(ListView):
     paginate_by = 5
 
 
-    def get_context_data(self, **kwargs):
-        context = super(AuthorsListView, self).get_context_data(**kwargs)
-
-        books_by_anonymous = Book.objects.filter(author=None)
-
-        context['books_by_anonymous'] = books_by_anonymous
-
-        return context
-
 
 class AuthorDetailView(DetailView):
     model = Author

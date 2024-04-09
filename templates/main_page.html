@@ -5,19 +5,15 @@
 
 {% block main_content %}
     
-    <link rel="stylesheet" href="{% static 'css/genre_box.css' %}" type="text/css">
-    
-    {% if current_user.is_authenticated %}
-    <h1 class="text text-center">Hello, {{ current_user.profile.get_bookie_name }}</h1>
-    {% endif %}
+  
     
     <div class="row">
-    <div class="col">
+    <div class="col  s">
         <div class="card-body">
-            <h5 class="card card-body" style="border-color: lightcoral ">
+            <h5 class="card card-body searchbar" style="background-image: url('static/images/nav-bg.jpg')">
             <form method="get" class="d-flex">
                 {{ filter_by_title_form.form }}
-                <button type="submit" class="btn align-items-center">Search</button>
+                <button type="submit" class="btn align-items-center search-btn">Search</button>
                 
             </form>
                 </h5>
@@ -28,7 +24,7 @@
         
         <div class="d-flex justify-content-end align-items-center">
             <form method="get" action="{% url 'generate random book' %}">
-                <button type="submit" class="btn btn-primary">I don`t know what to read</button>
+                <button type="submit" class="btn btn-primary random-btn">I don`t know what to read</button>
         </form>
         {% endif %}
 </div>
@@ -40,6 +36,7 @@
      
    
     </div>
+    
     {% if search_results|length != all_books_added|length %}
         <ul type="none" class="card card-body" style="border-color: lightcoral">
         <h2 class="text text-center">Results from your search:</h2>
@@ -55,83 +52,35 @@
     {% endif %}
     
     
-        
-    <br><br>
-    <div class="text text-center">
-        <h1>Our genres:</h1>
-    <br><br>
-    </div>
+  
     {% if all_books_added|length == 0 %}
     <h1 class="row justify-content-center">No books added yet :(</h1>
-        
-        
-    
-    {% else %}
-    
-        {% for genre in genres %}
-            {% if genre.get_book_count != 0%}
-                    <div class="genre-name" onclick="showBooks('{{ genre.id }}')">
-                    <h2 class="text text-center">{{ genre.name }}{{ genre.get_age_restriction}}</h2>
-                    </div>
-                        <ul type="none" class=' hidden genre-books-{{ genre.id }}'>
-                            {% for book in genre.book_set.all %}
-                                {% if book.required_age and book.required_age <= user.age or book.required_age is None or user.is_staff%}
-                                    <li><a href="{% url 'book details' pk=book.pk %}" class="text-decoration-none">
-                                        <div class="card container text-center">
-                                            <div class="row g-10">
-                                                <div class="col-md-2 d-flex align-items-center">
-                                            <img src="{{ book.cover_image.url }}" class="img-fluid rounded-start centered" alt="Book Cover">
-                                            </div>
-                                            <div class="col-md-8">
-                                                <div class="card-body">
-                                                    <h5 class="card-title">Title: {{ book.title }} / {{ book.year_published }}</h5>
-                                                <p class="card-text">
-                                                <div class="card-body">
-                                                    <h6 class="card-text">By {{ book.author }}</h6>
-                                                    
-                                                </div>
-                                                {% for genre in book.genres.all %}
-                                                    {{ genre.name }}
-                                                    {% if not forloop.last %}
-                                                        /
-                                                    {% endif %}
-                                                {% endfor %}
-                                                </p>
-                                                    <p class="card-text summary">Summary: {{ book.description|truncatechars:40}}</p>
-                                            </div>
-                                            </div>
-                                            </div>
-                                        </div></a></li>
-                            {% elif not book.required_age and not current_user.is_authenticated %}
-                                    {{ book }}
-                        
-                        {% endif %}
-                    {% endfor %}
-                        <br><br><br>
-                </ul>
-                </div></div></div>
-                
-        {% endif %}
-    {% endfor %}
     {% endif %}
     
-    <style>
-        .hidden {
-            display: none;
-        }
-    </style>
+    <div class="col">
+    <br><br><br><br>
+    {# DISPLAYING OUR GENRES #}
+    <div class="main-page-headers">
+        <h2 class="text-dark">Genres:</h2>
+    </div>
+    <div class="genre-container">
+        <div class="genre-scroll">
+            {% for genre in genres %}
+               
+                <div class="genre">
+                <a href="{% url 'all_books' genre.name %}" class="text-decoration-none text-dark">
+                    <img class='genre-img' src="{{ genre.genre_image.url }}" alt="{{ genre.name }}">
+                    <p>{{ genre.name }}</p>
+                    <p>Books from this genre: {{ genre.book_set.all|length }}</p>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
     
-    <script>
-        function showBooks(genreId) {
-            let books = document.querySelectorAll(".genre-books-" + genreId);
-            
-            books.forEach(function(book) {
-                book.classList.toggle("hidden");
-            });
-        }
-    </script>
-    
-    
+    </div>
+    </div>
+
+
     
     
 {% endblock %}

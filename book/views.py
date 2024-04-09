@@ -12,7 +12,7 @@ from django.urls import reverse_lazy
 from django.views.generic.base import View
 
 from django.views.generic import DetailView, UpdateView, CreateView, DeleteView, ListView
-from Genre.views import get_filtered_categories
+from Genre.views import show_genre
 
 from book.forms import BookForm, BookUpdateForm
 from book.models import Book
@@ -90,6 +90,7 @@ class BookUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class BookDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Book
     success_url = reverse_lazy('main page')
+    form_class = BookForm
 
     def test_func(self):
         book = self.get_object()
@@ -139,14 +140,14 @@ class BookDetailView(DetailView):
         return context
 
 
-class BooksListView(ListView):
+class MainPage(ListView):
     model = Book
     form_class = BookForm
     template_name = 'main_page.html'
     paginate_by = 5
 
     def get_context_data(self, **kwargs):
-        context = super(BooksListView, self).get_context_data(**kwargs)
+        context = super(MainPage, self).get_context_data(**kwargs)
 
         if self.request.user.is_authenticated:
             current_user = self.request.user
@@ -155,7 +156,7 @@ class BooksListView(ListView):
         else:
             current_user = Bookie.DoesNotExist
 
-        genres = get_filtered_categories(current_user)
+        genres = show_genre(current_user)
 
         all_books_added = Book.objects.all()
 
@@ -172,6 +173,27 @@ class BooksListView(ListView):
         context['filter_by_title_form'] = filter_by_title
         context['search_results'] = search_results
 
+        return context
+
+class BooksListViewInGenre(ListView):
+    model = Book
+    form_class = BookForm
+    template_name = 'books/genre_book_list.html'
+    context_object_name = "genre_books"
+    paginate_by = 5
+
+    def get_queryset(self):
+
+        genre_name = self.kwargs.get('genre')
+
+        queryset = Book.objects.filter(genres__name=genre_name)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        genre_name = self.kwargs.get('genre')
+        context['genre_name'] = genre_name
         return context
 
 

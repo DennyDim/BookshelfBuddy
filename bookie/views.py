@@ -1,10 +1,10 @@
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
-from django.http import HttpResponseRedirect
+
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.utils.decorators import method_decorator
+
 
 from bookie import forms as bookie_forms
 
@@ -15,7 +15,7 @@ from django.views.generic import DetailView, UpdateView, DeleteView, CreateView
 from bookie.models import Bookie, BookieProfile
 
 
-from bookie.forms import BookieProfileForm, BookieDisplayProfileForm
+from bookie.forms import BookieProfileForm, BookieDisplayProfileForm, DeleteBokieForm
 from datetime import datetime
 
 from bookie.decorators import allowed_users, custom_login_required
@@ -92,19 +92,40 @@ class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.request.user.pk == self.kwargs.get('pk') or self.request.user.is_superuser
 
 
-
-class DeleteBookie(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class BookieDeleteView(DeleteView):
     model = Bookie
-    success_url = reverse_lazy('main page')
+    success_url = reverse_lazy('main_page')
+    form_class = DeleteBokieForm
 
-    def get_object(self, queryset=None):
-        return self.request.user
+    def test_func(self):
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['current_user'] = self.request.user
-        return context
+        current_pk = self.get_object()
+        print(current_pk)
+        return self.request.user.is_superuser or current_pk == self.request.user.pk
+
+@allowed_users(['superuser', 'auth user'])
+def my_delete(request, pk):
+    print(f"my_delete {pk}")
+    to_be_deleted = get_object_or_404(Bookie, pk=pk)
+
+    if request.method == "POST":
+        to_be_deleted.delete()
+        return redirect('main page')
+
+    return render(request, "bookies/delete_profile.html")
+
+
 
 def not_allowed_page(request):
     return render(request, 'errors/not_allowed.html')
 
+"""
+12
+denny
+23
+
+
+9 - 
+yoda3
+18
+"""

@@ -7,14 +7,18 @@ def allowed_users(allowed_roles: list):
 
             current_role = None
 
-            if request.user.groups.exists():
-                current_role = request.user.groups.all()[0].name
+            if request.user.is_superuser:
+                current_role = 'superuser'
+            elif request.user.is_staff:
+                current_role = 'staff'
+            elif request.user.is_authenticated:
+                current_role = 'auth user'
 
-            if current_role in allowed_roles:
-                return view_func(request, *args, **kwargs)
             else:
                 return redirect('not allowed')
 
+            if current_role in allowed_roles:
+                return view_func(request, *args, **kwargs)
         return wrapper_func
 
     return decorator
