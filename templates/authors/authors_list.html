@@ -2,6 +2,8 @@
 {% load crispy_forms_tags %}
 {% load static %}
 
+
+
 {% block main_content %}    
     
     
@@ -9,6 +11,7 @@
     
     <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/journal/bootstrap.min.css">
     <br>
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
@@ -17,30 +20,34 @@
                 <div>
                     <ul type="none">
                         {% for author in authors %}
-
+                            <div class="card" style="border-color: #cccccc; background:none; padding: 15px;">
                             <li>
-                                <h3>
-                                    <a href="{% url 'author details' pk=author.pk%}" class="text-decoration-none">
-                                        <div class="d-flex align-items-center mb-3">
-                                        <img src="{{ author.author_picture.url}}" style="width: 20%; height: 20%; object-fit: cover;
+                                <li>
+                                    <h3>
+                                        <a href="{% url 'author details' pk=author.pk%}" class="text-decoration-none text-light">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <img src="{{ author.author_picture.url}}" style="width: 20%; height: 20%; object-fit: cover;
                                 width: 90px; height: 90px;" class="profile-picture rounded-circle">
-                                            {{ author.get_name }}   / {{ author.year_born }}
-                                        </div>
-                                    </a>
-                                </h3>
+                                                    {{ author.get_name }}   / {{ author.year_born }}
+                                            </div>
+                                        </a>
+                                    </h3>
                                 
-                            </li>
+                                </li>
                             
                             
-                            <li>Total books added: {{ author.book_set.all|length }}</li>
-                            <ul>
-                                {% for category in author.get_book_categories %}
-                                    <li>{{ category }}</li>
-                                {% endfor %}
-                            </ul>
+                                <li>Total books added: {{ author.book_set.all|length }}</li>
+                                    <ul>
+                                        {% for category in author.get_book_categories %}
+                                            <li>{{ category }}</li>
+                                        {% endfor %}
+                                    </ul>
+                            </div>
                         {% endfor %}
-                    </ul>
-                </div>
+
+                     </ul>
+
+                </ul>
             </div>
         </div>
     </div>

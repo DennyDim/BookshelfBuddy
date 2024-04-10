@@ -5,11 +5,11 @@
 }
 
 .type-border-negative{
-    border-color: darkred;
+    border-color: #bb0a0a;
 }
 
 .type-border-positive{
-    border-color: mediumseagreen;
+    border-color: #41c97d;
 }
 
 .type-border-neutral{

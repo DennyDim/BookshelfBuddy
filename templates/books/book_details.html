@@ -6,14 +6,11 @@
 
 {% block main_content %}
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     
     <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/journal/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'css/reviews.css' %}">
-
-
-
-
-   
+    <link rel="stylesheet" type="text/css" href="{% static 'css/sort_reviews.css' %}">
 
     <form method="get" action="{% url 'book details' pk=book.pk%}" enctype="multipart/form-data">
     
@@ -28,27 +25,27 @@
                     <ul class="list-unstyled">
 
                         <li><div class="container row col">
-                            <h4><span class="text-primary">Title:
+                            <h4 class="text-light"><span class="text-dark">Title:
                             </span> {{ book.title }}</h4>
                         </div></li>
 
 
 
                         <li><div class="container row col">
-                            <h4><span class="text-primary">Author:
-                            </span> {% if book.author %}{{ book.author }}
-                            {% else %}Anonymous{% endif %}</h4>
-                        </div></li>
+                            <h4><span class="dark">Author:
+                               </span> <a href="{% url 'author details' pk=book.author_id %}" class="text-light">
+                             {{ book.author }}
+                            </a></h4></div></li>
 
 
                         <li><div class="container row col">
-                            <h4><span class="text-primary">Published in:
+                            <h4 class="text-light"><span class="text-dark">Published in:
                             </span> {{ book.year_published }}</h4>
                         </div></li>
 
 
                         <li><div class="container row col">
-                            <h4><span class="text-primary">Genres:
+                            <h4 class="text-light"><span class="text-dark">Genres:
                             </span> {% if book.category.all|length == 1 %}
                                     {{ book.category.name }}
                                     {% else %}
@@ -62,16 +59,24 @@
                         </div></li>
 
                         <li><div class="container row col">
-                            <h4 class=""><span class="text-primary">Summary:
+                            <h4 class="text-light"><span class="text-dark">Summary:
                             </span><p class="text-wrap text-break">{{ book.description }}</p></h4>
                         </div></li>
 
                         <li><div class="container row col">
-                            <h6 class="text-secondary">Added By:
+                            <h6  style="color: #423838">Added By:
                              {% if not book.added_by %}Anonymous{% else %}
-                                <a href="{% url 'bookie profile' pk=book.added_by.pk %}">{{ book.added_by }}</a>
+                                <a style="color: #423838" href="{% url 'bookie profile' pk=book.added_by.pk %}">{{ book.added_by }}</a>
                                 {% endif %}</h6>
                         </div></li>
+                        {% if current_user.is_superuser %}
+                            <div class="container row col">
+                            <h6  style="color: #423838">Last edited by:
+                             {% if not book.last_edited_by_email %}No one{% else %}
+                                 {{ book.last_edited_by_email}}{% endif %}
+                            </h6>
+                            </div>
+                        {% endif %}
                 </ul>
 
                 <br>
@@ -116,6 +121,7 @@
                             <h5>Rate the book:</h5>
 
                             <div class="rate">
+
                                 <input type="radio" name='rating' id="rating10" value="10">
                                 <label for="rating10" title="One of my favourite books!"></label>
 
@@ -192,7 +198,7 @@
                             </form>
                         </div>
                     {% endif %}
-       
+
                 {% elif book in current_user.profile.want_to_read.all %}
 
                     {# he can add it to the have_read library #}
@@ -207,10 +213,10 @@
                         </div>
                     </div>
 
-                    
+
                 {# In case the user hasn`t added the book in any of his libraries #}
                 {% else %}
- 
+
                     {# he ca add to want_to_read library #}
                     <div class="container">
                     <br><br><br>
@@ -249,7 +255,7 @@
     {# CRUD OPERATIONS FOR STAFF MEMBERS #}
         {% if current_user.is_staff %}
             <br>
-            <h3>------------------------------------</h3>
+
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-auto">
@@ -298,22 +304,22 @@
         {% endfor %}
     </div>
 {% endif %}
+
+
+    {# Sort reviews by type #}
     
     <br><br><br>
-    <div class="row">
-
-        <div class="card-body">
-            <h5 class=" card-body d-flex">
-            <form method="get" class="d-fex">
-                {{ filer_by_review_type.form|crispy }}
-                <button type="submit" class="btn align-items-center">Sort</button>
-            </form>
-                </h5>
-        </div>
-    </div>
 
 
-    
+            <div class="sort-reviews">
+
+                <form method="get" class="review-form">
+                    {{ filer_by_review_type.form}}
+                <button type="submit" class="review-btn">Sort</button>
+                </form>
+
+            </div>
+
 
     
     <div class="container">
@@ -323,9 +329,9 @@
          <h2 class="text-center">All reviews({{ book.book_reviews.all|length }})</h2>
             {% for review in all_reviews.all %}
                 
-                {#  {% if review.review %} #}
+                    {% if review.review %}
                     <div class="review">
-                    <div class="reviews card mb-3 type-border-{{ review.type }}">
+                    <div class="reviews card mb-3 type-border-{{ review.type }} border-3">
                         <div class="card-body">
                             <div class="d-flex align-items-center mb-3">
                                 <img src="{{ review.user.profile.profile_picture.url }}" style="width: 20%; height: 20%; object-fit: cover;
@@ -342,6 +348,7 @@
                                     </div>
                                 </div>
                             </div>
+                        {% endif %}
                         </div>
                     </div>
                 {# {% endif %} #}

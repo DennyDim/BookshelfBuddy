@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import AnonymousUser, User
 
-from django.core.exceptions import ValidationError
-from django.db.models import Q
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.db.models import Q, Count, Avg, F
 from django.http import HttpResponse
 
 from django.shortcuts import redirect, render
@@ -13,6 +13,7 @@ from django.views.generic.base import View
 
 from django.views.generic import DetailView, UpdateView, CreateView, DeleteView, ListView
 from Genre.views import show_genre
+from author.models import Author
 
 from book.forms import BookForm, BookUpdateForm
 from book.models import Book
@@ -59,6 +60,17 @@ class AddBookView(UserPassesTestMixin, CreateView):
         form.instance.added_on_date = datetime.now()
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        all_books_added = Book.objects.all()
+
+        filter_by_title = BookFilterByTitle(
+            self.request.GET,
+            queryset=all_books_added
+        )
+        context['filter_by_title_form'] = filter_by_title
+        return context
+
 
 class BookUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Book
@@ -86,6 +98,17 @@ class BookUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('book details', kwargs={'pk': self.object.pk})
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        all_books_added = Book.objects.all()
+
+        filter_by_title = BookFilterByTitle(
+            self.request.GET,
+            queryset=all_books_added
+        )
+        context['filter_by_title_form'] = filter_by_title
+        return context
+
 
 class BookDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Book
@@ -111,6 +134,8 @@ class BookDetailView(DetailView):
         current_book = self.get_object()
         current_user = self.request.user
 
+        current_review = None
+
         all_reviews = ReviewAndRating.objects.filter(book=current_book)
 
         filter_review_by_type = FilterReviewByType(
@@ -118,6 +143,14 @@ class BookDetailView(DetailView):
         )
 
         all_reviews = filter_review_by_type.qs
+
+
+        all_books_added = Book.objects.all()
+
+        filter_by_title = BookFilterByTitle(
+            self.request.GET,
+            queryset=all_books_added
+            )
 
         if current_book.name_of_series:
             books_from_the_same_series = Book.objects.filter(name_of_series=current_book.name_of_series,
@@ -127,15 +160,20 @@ class BookDetailView(DetailView):
             current_review = ReviewAndRating.objects.get(book=current_book, user=current_user)
 
         except ReviewAndRating.DoesNotExist:
-            current_review = None
+            pass
+
+        except TypeError:
+            pass
 
         context['book'] = self.get_object()
         context['current_user'] = current_user
+
         context['current_review'] = current_review
+        context['filer_by_review_type'] = filter_review_by_type
         context['review_types'] = ReviewAndRating.TYPE_CHOICES
         context['books_from_the_same_series'] = books_from_the_same_series
         context['all_reviews'] = all_reviews
-        context['filer_by_review_type'] = filter_review_by_type
+        context['filter_by_title_form'] = filter_by_title
 
         return context
 
@@ -148,12 +186,12 @@ class MainPage(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(MainPage, self).get_context_data(**kwargs)
+        current_user = None
 
-        if self.request.user.is_authenticated:
+        try:
             current_user = self.request.user
-            context['current_user'] = current_user
 
-        else:
+        except Bookie.DoesNotExist:
             current_user = Bookie.DoesNotExist
 
         genres = show_genre(current_user)
@@ -167,11 +205,22 @@ class MainPage(ListView):
 
         search_results = filter_by_title.qs
 
+        top_10_authors = Author.objects.annotate(likes=Count('people_who_like_this_author')).order_by('likes', 'name')[:10]
+        top_10_rated_books = (
+            Book.objects
+            .annotate(avg_rating=Avg('book_reviews__rating'))
+            .order_by('avg_rating', 'title')
+            [:10]
+        )
+
         context['current_user'] = current_user
         context['genres'] = genres
         context['all_books_added'] = all_books_added
         context['filter_by_title_form'] = filter_by_title
         context['search_results'] = search_results
+
+        context['top_10_authors'] = top_10_authors
+        context['best_rated_books'] = top_10_rated_books
 
         return context
 
@@ -180,6 +229,7 @@ class BooksListViewInGenre(ListView):
     form_class = BookForm
     template_name = 'books/genre_book_list.html'
     context_object_name = "genre_books"
+    ordering = ['title']
     paginate_by = 5
 
     def get_queryset(self):
@@ -193,7 +243,16 @@ class BooksListViewInGenre(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         genre_name = self.kwargs.get('genre')
+        all_books_added = Book.objects.all()
+
+        filter_by_title = BookFilterByTitle(
+            self.request.GET,
+            queryset=all_books_added
+        )
+        context['filter_by_title_form'] = filter_by_title
+
         context['genre_name'] = genre_name
+
         return context
 
 
@@ -230,9 +289,56 @@ def generate_random_book(request):
         Q(have_read__user=current_user) | Q(want_to_read__user=current_user)
     )
 
+    all_books_added = Book.objects.all()
+
+    filter_by_title = BookFilterByTitle(
+        request.GET,
+        queryset=all_books_added
+    )
+
+    context = {
+        'filter_by_title_form': filter_by_title
+    }
+
     if books_we_can_generate.exists():
         random_book = books_we_can_generate.order_by("?").first()
+        context['book'] = random_book
 
-        return render(request, 'books/random_book.html', {"book": random_book})
+        return render(request, 'books/random_book.html', context)
 
     return redirect('main page')
+
+
+def search_view(request):
+    if request.method == "POST":
+
+        book_filter = BookFilterByTitle(request.POST, queryset=Book.objects.all())
+
+
+        all_books_added = Book.objects.all()
+
+        filter_by_title = BookFilterByTitle(
+            request.GET,
+            queryset=all_books_added
+            )
+
+
+        if book_filter.form.is_valid():
+            search_results = book_filter.qs
+
+            context = {
+                'search_results': search_results,
+                'filter_by_title_form': filter_by_title
+            }
+
+            return render(request, 'search_results.html', context)
+
+
+    context = {
+        'filter_by_title_form': filter_by_title
+    }
+    return render(request, 'base.html', context)
+
+
+
+

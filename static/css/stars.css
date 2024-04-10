@@ -28,6 +28,6 @@ input:checked ~ label, label:hover ~ label{
 
 input:checked + label:hover, input:checked ~ label:hover, input:checked ~ label:hover ~ label,
 label:hover ~ input:checked ~ label{
-    color: lightcoral;
+    color: #490808;
 }
 

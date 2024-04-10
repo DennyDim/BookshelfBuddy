@@ -4,8 +4,8 @@
     {% load crispy_forms_tags %}
         <title>New Author</title>
         <body>
-            <div class="row col-md-6 mx-auto  card card-body text-center">
-                <form action="{% url 'create new author' %}" enctype="multipart/form-data" method="post">
+            <div class="row col-md-6 mx-auto card-body text-center">
+                <form action="{% url 'create new author' %}" enctype="multipart/form-data" method="post" style="">
                     {{ form|crispy }}
                     {% csrf_token %}
                 

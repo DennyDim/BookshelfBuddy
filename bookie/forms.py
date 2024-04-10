@@ -1,11 +1,11 @@
 from django.contrib.auth import forms as auth_forms
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.core.validators import MinValueValidator
+
 
 from bookie.models import Bookie, BookieProfile
 
-from bookie import validators as bookie_validators
+
 
 
 class BookieRegistrationForm(auth_forms.UserCreationForm):
@@ -56,7 +56,7 @@ class LogInBookieForm(CustomAuthenticationForm):
 class BookieProfileForm(forms.ModelForm):
     class Meta:
         model = BookieProfile
-        fields = ['profile_picture','country', 'bio',]
+        fields = ['profile_picture', 'country', 'bio',]
 
         widgets = {
             'bio': forms.Textarea(

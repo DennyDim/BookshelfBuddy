@@ -11,20 +11,6 @@ body {
 }
 
 
-.searchbar{
-    color: white;
-
-}
-
-.search-btn{
-    color: white;
-}
-
-.random-btn{
-    background-color: rgba(63, 28, 26, 0.68);
-    border-color: lemonchiffon;
-}
-
 .main-page-headers {
     background-color: #d2b4b4;
 }
@@ -35,21 +21,16 @@ footer {
     color: seashell;
 }
 
-
-
-.genre-container {
-    overflow-x: auto;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch; /* Enable smooth scrolling on iOS */
-    margin-bottom: 20px; /* Add margin to ensure space for scrollbars */
-    border-bottom: 1px solid #ccc; /* Add a border to visually separate genres from scrollbar */
+.searchbar input {
+    background: #d1b3b3;
+    border-radius: 8px;
+    color: #0c0c0c;
 }
 
-.genre-container {
-    scrollbar-width: thin;
-    scroll-behavior: smooth;
-    scrollbar-color: rgb(211, 181, 181) #362b2b;
+.searchbar  button{
+   border-radius: 8px;
 }
+
 
 
 .genre-scroll {
@@ -70,3 +51,38 @@ footer {
     object-fit: cover;
 }
 
+.genre-container {
+    overflow-x: auto;
+    overflow-y: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 20px; /
+    border-bottom: 1px solid #ccc;
+}
+
+.genre-container {
+    scrollbar-width: thin;
+    scroll-behavior: smooth;
+    scrollbar-color: rgb(211, 181, 181) #362b2b;
+}
+
+
+
+
+/*
+
+.genre-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 20px; /
+    border-bottom: 1px solid #ccc;
+}
+
+.genre-container {
+    scrollbar-width: thin;
+    scroll-behavior: smooth;
+    scrollbar-color: rgb(211, 181, 181) #362b2b;
+}
+
+ */

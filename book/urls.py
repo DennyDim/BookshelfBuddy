@@ -6,6 +6,7 @@ from book import views as book_views
 
 urlpatterns = [
 
+    path('search/', book_views.search_view , name='search by title'),
 
     path('add-to-wishlist/', book_views.AddBookToWishlistView.as_view(), name='add to wishlist'),
     path('already-read/', book_views.AddBookToAlreadyReadView.as_view(), name='add to already read'),

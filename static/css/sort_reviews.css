@@ -1,0 +1,29 @@
+
+
+.sort-reviews {
+    display: flex;
+    align-items: center;
+}
+
+.review-form {
+    margin-right: 30px;
+    display: flex;
+    align-items: center;
+}
+
+
+.review-btn {
+    display: flex;
+    padding: 8px 16px;
+    background-color: #cbb6b6;
+    color: black;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.review-btn:hover {
+    background-color: #948080;
+}
+
+

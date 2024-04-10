@@ -17,5 +17,6 @@ urlpatterns = [
         path('author_detail/', author_views.AuthorDetailView.as_view(), name='author details'),
 
         path('delete_author/', author_views.AuthorDeleteView.as_view(), name='delete author'),
+        path('like/', author_views.like_author, name='like author'),
     ]))
 ]

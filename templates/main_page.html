@@ -5,80 +5,76 @@
 
 {% block main_content %}
     
-  
     
-    <div class="row">
-    <div class="col  s">
-        <div class="card-body">
-            <h5 class="card card-body searchbar" style="background-image: url('static/images/nav-bg.jpg')">
-            <form method="get" class="d-flex">
-                {{ filter_by_title_form.form }}
-                <button type="submit" class="btn align-items-center search-btn">Search</button>
-                
-            </form>
-                </h5>
-            
-        </div>
-       
-        {% if current_user.is_authenticated %}
-        
-        <div class="d-flex justify-content-end align-items-center">
-            <form method="get" action="{% url 'generate random book' %}">
-                <button type="submit" class="btn btn-primary random-btn">I don`t know what to read</button>
-        </form>
-        {% endif %}
-</div>
 
-    <br>
-    </div>
-    </div>
-    <div>
-     
-   
-    </div>
-    
-    {% if search_results|length != all_books_added|length %}
-        <ul type="none" class="card card-body" style="border-color: lightcoral">
-        <h2 class="text text-center">Results from your search:</h2>
-        {% for s_book in search_results %}
-            <li><h3><a href="{% url 'book details' pk=s_book.pk %}">{{ s_book }}</a></h3></li>
-        {% empty %}
-            <h3 class="text text-center">Sorry, we couldn`t find anything :(</h3>
-        {% endfor %}
-        </ul>
-        
-
-        <h1>----------------------------------------</h1>
-    {% endif %}
-    
-    
-  
-    {% if all_books_added|length == 0 %}
-    <h1 class="row justify-content-center">No books added yet :(</h1>
-    {% endif %}
-    
-    <div class="col">
-    <br><br><br><br>
     {# DISPLAYING OUR GENRES #}
+    {% if all_books_added|length == 0 %}
+        <h1 class="row justify-content-center">No books added yet :(</h1>
+    {% endif %}
+    
+        <br><br><br><br>
+    
+        <div class="main-page-headers">
+            <h2 class="text-dark">Genres:</h2>
+        </div>
+        <div class="genre-container">
+            <div class="genre-scroll">
+                {% for genre in genres %}
+               
+               
+                    <div class="genre">
+                        <a href="{% url 'paginated books' genre.name 1 %}" class="text-decoration-none text-dark">
+                            <img class='genre-img' src="{{ genre.genre_image.url }}" alt="{{ genre.name }}">
+                                <p>{{ genre.name }}</p>
+                                <p>Books from this genre: {{ genre.book_set.all|length }}</p>
+                        </a>
+                    </div>
+            {% endfor %}
+            </div>
+    
+        </div>
+    
+    
+    <p></p>
+    
+    {# Displaying top 10 authors #}
     <div class="main-page-headers">
-        <h2 class="text-dark">Genres:</h2>
+        <h2 class="text-dark">Top 10 authors:</h2>
     </div>
     <div class="genre-container">
         <div class="genre-scroll">
-            {% for genre in genres %}
-               
+            {% for author in top_10_authors %}
+
                 <div class="genre">
-                <a href="{% url 'all_books' genre.name %}" class="text-decoration-none text-dark">
-                    <img class='genre-img' src="{{ genre.genre_image.url }}" alt="{{ genre.name }}">
-                    <p>{{ genre.name }}</p>
-                    <p>Books from this genre: {{ genre.book_set.all|length }}</p>
+                <a href="{% url 'author details' author.pk %}" class="text-decoration-none text-dark">
+                    <img class='genre-img' src="{{ author.author_picture.url }}" alt="{{ author.get_name }}">
+                    <p>{{ author.get_name }}</p>
+                    <p>Likes: {{ author.people_who_like_this_author.all|length }}</p>
                     </a>
                 </div>
             {% endfor %}
         </div>
+    </div>
     
+    {# Displaying the top 10 rated books #}
+    <div class="main-page-headers">
+        <h2 class="text-dark">Top 10 books:</h2>
     </div>
+    <div class="genre-container">
+        <div class="genre-scroll">
+            {% for book in best_rated_books %}
+
+                <div class="genre">
+                <a href="{% url 'book details' book.pk %}" class="text-decoration-none text-dark">
+                    <img class='genre-img' src="{{ book.cover_image.url }}" alt="{{ book }}">
+                    <p>{{ book }}</p>
+                    <p>Rating: {{ book.overall_rating|floatformat:1 }}</p>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
     </div>
+    
 
 
     

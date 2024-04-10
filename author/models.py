@@ -56,29 +56,30 @@ class Author(models.Model):
         null=True,
     )
 
-
     author_picture = models.ImageField(
         upload_to="authors_pictures",
         default='no_profile.png',
     )
-
 
     authors_bio = models.TextField(
         max_length=1_000,
         help_text=f"Use at least {MIN_AUTHOR_BIO_CHARS} characters.",
         validators=[
             MinLengthValidator(MIN_AUTHOR_BIO_CHARS),
-        ]
+        ])
 
-
+    people_who_like_this_author = models.ManyToManyField(
+        'bookie.Bookie',
+        related_name='author_likes',
+        blank=True
     )
+
     @property
     def get_name(self):
         if self.pseudonym:
             return f"{self.name}({self.pseudonym})"
         else:
             return self.name
-
 
     def __str__(self):
         return self.get_name

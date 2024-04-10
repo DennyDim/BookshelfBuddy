@@ -18,12 +18,16 @@ def show_genre(bookie: Bookie):
     user = bookie
     today = datetime.date.today()
 
+
     if user.is_authenticated:
+
         if user.is_staff:
+
             genres = Genre.objects.all()
 
         else:
             user_age = (today.year - user.date_joined.year) + user.age
+
             genres = Genre.objects.filter(Q(age_restriction__lte=user_age) |Q (age_restriction__isnull=True))
 
     else:

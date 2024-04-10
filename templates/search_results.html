@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 
 {% block main_content %}
-        <ul>
-        <form action="{% url 'search results'%}" method="get">
-            {% for book in results %}
-                <h1> we found sth</h1>
+        <ul type="none">
+        <form action="{% url 'search by title'%}" >
+            {% for book in search_results %}
+                <p></p>
+                <br>
+                
                 <li><a href="{% url 'book details' pk=book.pk %}" class="text-decoration-none">
-                        <div class="card container text-center">
+                        <div class="card container text-center border-4" style="border-color: black">
                             <div class="row g-10">
                                 <div class="col-md-2 d-flex align-items-center">
                                 <img src="{{ book.cover_image.url }}" class="img-fluid rounded-start centered" alt="Book Cover">

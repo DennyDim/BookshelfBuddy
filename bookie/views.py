@@ -1,15 +1,16 @@
 from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LoginView, LogoutView
+
+from django.contrib.auth.views import LoginView
 
 
 from django.shortcuts import render, redirect, get_object_or_404
 
-
+from book.filters import BookFilterByTitle
+from book.models import Book
 from bookie import forms as bookie_forms
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.views.generic import DetailView, UpdateView, DeleteView, CreateView
 
 from bookie.models import Bookie, BookieProfile
@@ -18,7 +19,7 @@ from bookie.models import Bookie, BookieProfile
 from bookie.forms import BookieProfileForm, BookieDisplayProfileForm, DeleteBokieForm
 from datetime import datetime
 
-from bookie.decorators import allowed_users, custom_login_required
+from bookie.decorators import allowed_users
 
 
 class RegisterBookieView(CreateView):
@@ -32,6 +33,17 @@ class RegisterBookieView(CreateView):
 
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        all_books_added = Book.objects.all()
+
+        filter_by_title = BookFilterByTitle(
+            self.request.GET,
+            queryset=all_books_added
+        )
+        context['filter_by_title_form'] = filter_by_title
+        return context
+
 
 class BookieLoginView(LoginView):
     template_name = "bookies/log_in.html"
@@ -39,10 +51,9 @@ class BookieLoginView(LoginView):
     success_url = reverse_lazy("main page")
 
 
-
 def logout_view(request):
     logout(request)
-    return redirect("login bookie")
+    return redirect("main page")
 
 
 class ProfileDetailView(DetailView):
@@ -64,6 +75,15 @@ class ProfileDetailView(DetailView):
         current_user = self.request.user
         users_profile_pk = self.kwargs.get('pk')
 
+        all_books_added = Book.objects.all()
+
+        filter_by_title = BookFilterByTitle(
+            self.request.GET,
+            queryset=all_books_added
+        )
+
+        context['filter_by_title_form'] = filter_by_title
+
         current_profile = BookieProfile.objects.get(pk=users_profile_pk)
         current_profile_email = Bookie.objects.get(pk=users_profile_pk)
 
@@ -73,8 +93,8 @@ class ProfileDetailView(DetailView):
         return context
 
 
-
 class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+
     model = BookieProfile
     form_class = BookieProfileForm
     template_name = 'bookies/edit_profile.html'
@@ -86,6 +106,17 @@ class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('bookie profile', kwargs={'pk': self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        all_books_added = Book.objects.all()
+
+        filter_by_title = BookFilterByTitle(
+            self.request.GET,
+            queryset=all_books_added
+        )
+        context['filter_by_title_form'] = filter_by_title
+        return context
 
     def test_func(self):
 
@@ -103,6 +134,7 @@ class BookieDeleteView(DeleteView):
         print(current_pk)
         return self.request.user.is_superuser or current_pk == self.request.user.pk
 
+
 @allowed_users(['superuser', 'auth user'])
 def my_delete(request, pk):
     print(f"my_delete {pk}")
@@ -114,18 +146,3 @@ def my_delete(request, pk):
 
     return render(request, "bookies/delete_profile.html")
 
-
-
-def not_allowed_page(request):
-    return render(request, 'errors/not_allowed.html')
-
-"""
-12
-denny
-23
-
-
-9 - 
-yoda3
-18
-"""

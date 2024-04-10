@@ -159,3 +159,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images/')
 
 
 LOGIN_REDIRECT_URL = 'main page'
+LOGOUT_REDIRECT_URL = reverse_lazy('main page')
+

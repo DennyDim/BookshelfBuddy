@@ -24,11 +24,12 @@ class AuthorForm(forms.ModelForm):
     class Meta:
 
         model = Author
-        min_year_born = Author.MIN_YEAR_BORN
-        super_user_email = Book.SUPER_USER_EMAIL
         fields = ['name', 'pseudonym', 'year_born','country', 'author_picture', 'authors_bio']
 
-        widgets ={
+        min_year_born = Author.MIN_YEAR_BORN
+        super_user_email = Book.SUPER_USER_EMAIL
+    
+        widgets = {
             'name': forms.TextInput(
                 attrs={'placeholder': 'Author`s name...',
                        'autofocus': True,}
@@ -52,7 +53,6 @@ class AuthorForm(forms.ModelForm):
             'year_born': f'If the author you want to add was born before year {min_year_born}\n'
                          f', please contact the admin at {super_user_email}.'
         }
-
 
 
 class FilterAuthorsByCountry(forms.Form):

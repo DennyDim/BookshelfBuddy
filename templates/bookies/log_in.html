@@ -1,5 +1,6 @@
 
-{% load crispy_forms_tags %}   
+{% load crispy_forms_tags %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,28 +13,28 @@
     <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/journal/bootstrap.min.css">
     
 </head>
-<body>
-        <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <h1 class="text-center">Log into your profile</h1>
-                <form method="post" autocomplete="off" action="{% url "login bookie" %}">
-                    
-                    {{ form|crispy }}
-                    {% csrf_token %}
-                    
-                    <input type="submit" class="btn btn-primary" value="Log In"/>
-                    or
-                    <a href="{% url 'register bookie' %}" class="btn btn-primary">Create new profile</a>
-                    or
-                    <a href="{% url 'main page' %}" class='btn btn-primary'>Go to main page without account</a>
-                    
-                    
-                </form>
-                
-                
+<body style="background-image: url('{% static 'images/log-in.jpg' %}'); background-size: cover;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;">
+         <div class="container ml-auto" style="padding: 300px">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <h1 class="text-center text-dark">Log into your profile</h1>
+                        <form method="post" autocomplete="off" action="{% url "login bookie" %}" style="color: #111111; font-size: 30px">
+
+                        {{ form|crispy }}
+                        {% csrf_token %}
+
+                        <input type="submit" class="btn btn-primary" value="Log In"/>
+                        or
+                        <a href="{% url 'register bookie' %}" class="btn btn-primary">Create new profile</a>
+                        or
+                        <a href="{% url 'main page' %}" class='btn btn-primary'>Go to main page without account</a>
+                        </form>
+                </div>
             </div>
-        </div>
-    </div>
+         </div>
+
 </body>
 </html>

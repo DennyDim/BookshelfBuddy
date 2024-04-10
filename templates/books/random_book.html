@@ -27,27 +27,27 @@
                     <ul class="list-unstyled">
 
                         <li><div class="container row col">
-                            <h4><span class="text-primary">Title:
+                            <h4 class="text-light"><span class="text-dark">Title:
                             </span> {{ book.title }}</h4>
                         </div></li>
 
 
 
                         <li><div class="container row col">
-                            <h4><span class="text-primary">Author:
+                            <h4 class="text-light"><span class="text-dark">Author:
                             </span> {% if book.author %}{{ book.author }}
                             {% else %}Anonymous{% endif %}</h4>
                         </div></li>
 
 
                         <li><div class="container row col">
-                            <h4><span class="text-primary">Published in:
+                            <h4 class="text-light"><span class="text-dark">Published in:
                             </span> {{ book.year_published }}</h4>
                         </div></li>
 
 
                         <li><div class="container row col">
-                            <h4><span class="text-primary">Genres:
+                            <h4 class="text-light"><span class="text-dark">Genres:
                             </span> {% if book.category.all|length == 1 %}
                                     {{ book.category.name }}
                                     {% else %}
@@ -61,21 +61,21 @@
                         </div></li>
 
                         <li><div class="container row col">
-                            <h4 class=""><span class="text-primary">Summary:
+                            <h4 class="text-light"><span class="text-dark">Summary:
                             </span><p class="text-wrap text-break">{{ book.description }}</p></h4>
                         </div></li>
 
                         <li><div class="container row col">
-                            <h6 class="text-secondary">Added By:
+                            <h6 class="text-dark">Added By:
                              {% if not book.added_by %}Anonymous{% else %}
-                                <a href="{% url 'bookie profile' pk=book.added_by.pk %}">{{ book.added_by }}</a>
+                                <a class='text-light' href="{% url 'bookie profile' pk=book.added_by.pk %}">{{ book.added_by }}</a>
                                 {% endif %}</h6>
                         </div></li>
                 </ul>
 
                 <br>
                 <div class="container row col">
-                            <h4><span class="text-primary">Overall rating:
+                            <h4 style="font-size: 30px"><span style="color: #fdc1c1">Overall rating:
                             </span> {{ book.overall_rating|floatformat:1 }}</h4>
                 </div>
 
