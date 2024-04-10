@@ -5,21 +5,28 @@ SUPERUSER:
 
     Name: denny@gmail.com
     PW: denny
-    AGE: 18
+    AGE: 24
 
 
 STAFF:
-      Name:
-      PW:
-      AGE:
-
-USERS:
       Name: yoda@gmail.com
       PW: yoda11
-      AGE: 35
 
 
 STAFF:
-      Name:
-      PW:
-      AGE:
+      Name: yoda@gmail.com
+      PW: yoda11
+
+STAFF:
+    Name: admin1@gmail.com
+    PW: yoda11
+
+
+
+USER:
+      Name: karen@gmail.com
+      PW: karen11
+
+USER:
+    Name: test1@gmail.com
+    PW: yoda11/ test11
