@@ -1,10 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Delete Profile Confirmation</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Popup Example</title>
+<link rel="stylesheet" type="text/css" href="{% static 'css/pop-up.css' %}">
 </head>
 <body>
-    You have been logged out. 
-    <a href="{% url 'login bookie' %}">That`s fine</a>
+
+<div class="popup-overlay"></div>
+
+<div class="popup">
+  <div class="popup-content">
+    <h2>Delete your  profile</h2>
+    <p>This is action will delete all your information. Proceed?</p>
+            <form method="post" action="{% url 'delete bookie profile' pk=current_pk %}">
+                {% csrf_token %}
+                <button id="close-popup" type="submit">Delete my account</button>
+            </form>
+  </div>
+</div>
+
+<script src="{% static 'js/pop-up.js' %}"></script>
+
 </body>
 </html>

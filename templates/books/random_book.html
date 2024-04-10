@@ -86,10 +86,13 @@
     
         </div>
     </form>
-    
-    
+    {% if current_user.is_staff or current_user.age >= book.required_age %}
   <div class="text text-center" style="background-color: lightcoral;" >
     <a style="color: beige;"
             href="{% url 'book details' pk=book.pk %}">Get more details about the book.</a>
    </div>
+    {% endif %}
+    
+    
+    
 {% endblock %}

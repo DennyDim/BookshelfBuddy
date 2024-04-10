@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
-from django.utils import timezone
 
 import time
 
@@ -8,8 +7,6 @@ from django.db import models
 
 from book.models import Book
 from bookie.models import Bookie
-
-# Create your models here.
 
 
 class ReviewAndRating(models.Model):

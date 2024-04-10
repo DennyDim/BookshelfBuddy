@@ -91,10 +91,11 @@
 {% endblock %}
 
 
-<footer class="">
+
+<footer>
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-9">
                 <h3>Often asked questions</h3>
                 <details class="footer-details">
                     <summary>Why do I need an account?</summary>
@@ -102,17 +103,18 @@
                     want to read, have read. People with accounts can post ratings of the books
                     they have read and share their review with the others.</p>
                 </details>
+
                 <details class="footer-details">
                     <summary>How do I rate a book?</summary>
                     <p>First you need an account, then you have to select
                     that you have read the book you want to rate. Then you`ll get the
                     option to vote for the book. The rating goes from 1 to 10, with 10 being one
-                    of the best books you have read. We also suggest you hover  with your mouse 
+                    of the best books you have read. We also suggest you hover  with your mouse
                         on the stars for a bit more fun :).</p>
                 </details>
                 <details class="footer-details">
                     <summary>I don`t want to see certain reviews.</summary>
-                    <p>You can easily choose what type of reviews to see. Simply click on the box next to 
+                    <p>You can easily choose what type of reviews to see. Simply click on the box next to
                     'Sort reviews by type' and choose the type of reviews you wish to see." Then click on our
                     button 'Sort' and you`ll only get the selected reviews.</p>
                 </details>
@@ -128,8 +130,20 @@
                         want to read library. We apologise for this inconvenience and we would encourage you to
                          track our site for any new books.</p>
                 </details>
+
             </div>
+            <div class="col-md-2 text-end text-center">
+                <h5>About us:</h5>
+                <a href="{% url 'about us' %}"  class='text-light text-center'>Who are we?</a>
+                
+
+
+
         </div>
     </div>
 </footer>
+
+
+
+
 </html>

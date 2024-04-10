@@ -1,12 +1,8 @@
 from django.core.validators import MaxValueValidator
 from django.db import models
 
-# Create your models here.
-
-
 
 class Genre(models.Model):
-
     genre_image = models.ImageField(
         upload_to='genre_images',
         default='no_cover.jpg'
@@ -42,12 +38,5 @@ class Genre(models.Model):
         else:
             return ''
 
-
-
-
-
     def __str__(self):
         return f"{self.name}{self.get_age_restriction}\nBooks: {self.book_set.count()}"
-
-
-

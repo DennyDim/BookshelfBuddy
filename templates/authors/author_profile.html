@@ -39,50 +39,49 @@
                 <ul class="list-unstyled">
                     <li>
                         <div class="container row col">
-                            <h4><span class="text-primary">Name:</span> {{ author.name }}</h4>
+                            <h4 class="text-light"><span class="text-dark">Name:
+                            </span>{{ author.name }}</h4>
                         </div>
                     </li>
                     {% if author.pseudonym %}
                     <li>
                         <div class="container row col">
-                            <h4><span class="text-primary">Pseudonym:</span> {{ author.pseudonym }}</h4>
+                            <h4 class="text-light"><span class="text-dark">Pseudonym:
+                            </span>{{ author.pseudonym }}</h4>
                         </div>
                     </li>
                     {% endif %}
                     <li>
                         <div class="container row col">
-                            <h4><span class="text-primary">Birth Year:</span> {{ author.year_born }}</h4>
+                            <h4 class="text-light"><span class="text-dark">Birth year:
+                            </span>{{ author.year_born }}</h4>
                         </div>
                     </li>
                     <li>
                         <div class="container row col">
-                            <h4><span class="text-primary">Country:</span>
-                                {% if author.country %}
-                                {{ author.country }}
-                                {% else %}
-                                Not specified
-                                {% endif %}
-                            </h4>
+                            <h4 class="text-light"><span class="text-dark">Country:
+                            </span>{% if author.country %}
+                                {{ author.country }}{% else %}Not specified
+                                {% endif %}</h4>
                         </div>
                     </li>
                     <li>
                         <div class="container row col">
-                            <h4><span class="text-primary">Author`s Biography:</span>
-                                <p class="text-wrap text-break"> {{ author.authors_bio }}</p>
-                            </h4>
+                            <h4 class="text-light text-wrap text-break"><span class="text-dark">Author`s Biography:
+                            </span>{{ author.authors_bio }}</h4>
                         </div>
                     </li>
                     <li>
-                        <h3>Total likes: <span id="likeCount" class="like-count">{{ all_likes|length }}</span></h3>
+                        <div class="container row col">
+                            <h3 class="text" style="color: #ecbdbd"><span class="text-dark">Total Likes:
+                            </span>{{ author.people_who_like_this_author.all|length }}</h3>
+                        </div>
                     </li>
                 </ul>
             </div>
         </div>
     </form>
 </div>
-
-
-             
         <br>
         {# CRUD OPERATIONS FOR STAFF MEMBERS #}
         {% if current_user.is_staff %}

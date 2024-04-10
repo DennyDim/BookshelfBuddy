@@ -73,8 +73,3 @@ class BookieDisplayProfileForm(forms.ModelForm):
         model = BookieProfile
         fields = ['profile_picture', 'bio', 'country', 'have_read', 'want_to_read']
 
-
-class DeleteBokieForm(forms.Form):
-    class Meta:
-        model = Bookie
-        fields =('__all__')

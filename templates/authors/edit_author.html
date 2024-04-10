@@ -7,6 +7,14 @@
             <form action="{% url 'edit author' pk=object.pk %}" enctype="multipart/form-data" method="post">
             
                 {{ form|crispy }}
+                
+                {% for field in form %}
+                        {% if field.errors %}
+                        <div style="font-size: 30px; color: #ec0707; background-color: #cbb6b6">
+                            {{ field.errors|join:", " }}
+                        </div>
+                    {% endif %}
+                    {% endfor %}
                 {% csrf_token %}
                 <input type="submit" class="btn btn-primary" 
                 value="Save Changes">

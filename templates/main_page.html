@@ -4,9 +4,51 @@
 
 
 {% block main_content %}
-    
-    
 
+
+
+
+    {# In case the book is part od series from the same author #}
+      {% if last_3_added_books %}
+          <div>
+            <br><br><br>
+            <h3 class="text-center" style="color: #e3d3d3; font-size: 50px; font-style: oblique">
+                Latest books:</h3>
+            <br>
+            <div class="row justify-content-center">
+            {% for l_book in last_3_added_books %}
+                {% if not l_book.required_age or current_user.is_staff or l_book.required_age <= current_user.age %}
+                <div class="col-md-6 d-flex align-items-center" style="width: 300px;">
+                <li type="none">
+                    <a href="{% url 'book details' pk=l_book.pk %}" class="text-decoration-none">
+                        <div class="card container text-center">
+                            <div class="row g-0">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <img src="{{ l_book.cover_image.url }}" class="img-fluid rounded-start centered" alt="Book Cover">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Title: {{ l_book.title }} / {{ l_book.year_published }}</h5>
+                                        <p class="card-text">Rating {{ l_book.overall_rating }}</p>
+                                        <p class="card-text summary">Summary: {{ l_book.description|truncatechars:20}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            </div>
+                {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}
+    </div>
+
+
+
+
+
+    <div class="main-page-content">
     {# DISPLAYING OUR GENRES #}
     {% if all_books_added|length == 0 %}
         <h1 class="row justify-content-center">No books added yet :(</h1>
@@ -74,7 +116,9 @@
             {% endfor %}
         </div>
     </div>
-    
+
+
+    </div>
 
 
     

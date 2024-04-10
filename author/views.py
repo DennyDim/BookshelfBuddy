@@ -1,20 +1,15 @@
-
-from django.core.paginator import Paginator
-
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView
 
 from author.models import Author
 
-from author.forms import AuthorForm, FilterAuthorsByCountry
+from author.forms import AuthorForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, UpdateView, CreateView, DeleteView
 
 from book.filters import BookFilterByTitle
 from book.models import Book
-
-
 
 
 class AuthorsListView(ListView):
@@ -23,6 +18,10 @@ class AuthorsListView(ListView):
     template_name = 'authors/authors_list.html'
     context_object_name = 'authors'
     paginate_by = 5
+
+    def get_queryset(self):
+        queryset = super().get_queryset().order_by('name')
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -36,9 +35,7 @@ class AuthorsListView(ListView):
         return context
 
 
-
 class AuthorDetailView(DetailView):
-
     model = Author
     form_class = AuthorForm
     template_name = 'authors/author_profile.html'
@@ -55,7 +52,7 @@ class AuthorDetailView(DetailView):
         filter_by_title = BookFilterByTitle(
             self.request.GET,
             queryset=all_books_added
-            )
+        )
         context['filter_by_title_form'] = filter_by_title
         context['all_likes'] = all_likes
 
@@ -118,7 +115,6 @@ class AuthorDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 
 def like_author(request, pk):
-
     current_page = request.META.get('HTTP_REFERER')
     author = Author.objects.get(pk=pk)
 

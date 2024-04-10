@@ -6,6 +6,7 @@ from bookie.models import Bookie
 
 import datetime
 
+
 # Here I filter the books and only get the appropriate books
 # if the user isn`t authenticated, he can`t view books with age restriction
 # if he is registered, I check his age in order to return a book
@@ -18,7 +19,6 @@ def show_genre(bookie: Bookie):
     user = bookie
     today = datetime.date.today()
 
-
     if user.is_authenticated:
 
         if user.is_staff:
@@ -28,13 +28,9 @@ def show_genre(bookie: Bookie):
         else:
             user_age = (today.year - user.date_joined.year) + user.age
 
-            genres = Genre.objects.filter(Q(age_restriction__lte=user_age) |Q (age_restriction__isnull=True))
+            genres = Genre.objects.filter(Q(age_restriction__lte=user_age) | Q(age_restriction__isnull=True))
 
     else:
         genres = Genre.objects.filter(age_restriction__isnull=True)
 
     return genres
-
-
-
-

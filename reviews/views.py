@@ -1,16 +1,11 @@
-from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse_lazy
-from django.views.generic import DeleteView, UpdateView, CreateView
+from django.shortcuts import render, redirect
+
+from django.views.generic import DeleteView
 
 from book.models import Book
 from reviews.forms import ReviewForm
 from reviews.models import ReviewAndRating
-
-from django.shortcuts import HttpResponse
-
-# Create your views here.
 
 
 def submit_review(request, book_id):
@@ -47,12 +42,10 @@ def submit_review(request, book_id):
     return render(request, 'books/book_details.html', context)
 
 
-
 class DeleteReview(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = ReviewAndRating
 
     def test_func(self):
-
         review = self.get_object()
 
         return self.request.user == review.user or self.request.user.is_staff

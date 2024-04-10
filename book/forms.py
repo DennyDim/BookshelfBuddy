@@ -1,15 +1,13 @@
-
 from django import forms
 
 from book.models import Book
 
 
 class BookForm(forms.ModelForm):
-
     class Meta:
         model = Book
         fields = ['title', 'author', 'genres', 'year_published', 'cover_image', 'description', 'name_of_series',
-                  'series_number',]
+                  'series_number', ]
 
         widgets = {
             'title': forms.TextInput(
@@ -23,11 +21,11 @@ class BookForm(forms.ModelForm):
                       ' please create it first then add the book.'
         }
 
-class BookUpdateForm(forms.ModelForm):
 
+class BookUpdateForm(forms.ModelForm):
     class Meta:
         model = Book
-        fields = ['title', 'author', 'genres', 'year_published', 'cover_image', 'description',]
+        fields = ['title', 'author', 'genres', 'year_published', 'cover_image', 'description', ]
 
         widgets = {
             'title': forms.TextInput(

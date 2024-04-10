@@ -6,7 +6,6 @@ from django.utils.translation import gettext_lazy as _
 
 
 class CustomLengthValidator(BaseValidator):
-
     # The current min length is 6
     def __init__(self, min_length):
         self.min_length = min_length

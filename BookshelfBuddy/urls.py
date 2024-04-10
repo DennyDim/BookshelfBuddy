@@ -20,14 +20,19 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from book import views as book_views
+
 import book.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
+    path('no-random/', book_views.get_no_random_template, name='no random'),
+    path('about-us/', book_views.about_us_page, name='about us'),
+
 
     path('', include('Genre.urls')),
-    path('bookie/', include('bookie.urls')),
+    path('', include('bookie.urls')),
     path('', include('author.urls')),
     path('', include('book.urls')),
     path('', include('reviews.urls')),

@@ -1,9 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Popup Example</title>
+<link rel="stylesheet" type="text/css" href="{% static 'css/pop-up.css' %}">
+</head>
+<body>
 
-<form action="{% url 'delete book' pk=book.pk %}" method="post">
-    
-    <h1>Are you sure?</h1>
-    {% csrf_token %}
+<div class="popup-overlay"></div>
 
-    <button type="submit" class="btn btn-primary">Yes</button>
-    
-</form>
+<div class="popup">
+  <div class="popup-content">
+    <h2>Delete this book</h2>
+    <p>Are you sure?</p>
+            <form method="post" action="{% url 'delete book' pk=current_pk %}">
+                {% csrf_token %}
+                <button id="close-popup" type="submit">Yes</button>
+            </form>
+  </div>
+</div>
+
+<script src="{% static 'js/pop-up.js' %}"></script>
+
+</body>
+</html>

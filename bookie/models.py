@@ -42,6 +42,9 @@ class Bookie(AbstractBaseUser, PermissionsMixin):
     MAX_EMAIL_LENGTH = 120
     DEFAULT_AGE = 18
 
+
+    SUPERUSER_PK = 14
+
     email = models.EmailField(
         max_length=MAX_EMAIL_LENGTH,
         unique=True,

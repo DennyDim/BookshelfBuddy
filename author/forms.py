@@ -24,7 +24,7 @@ class AuthorForm(forms.ModelForm):
     class Meta:
 
         model = Author
-        fields = ['name', 'pseudonym', 'year_born','country', 'author_picture', 'authors_bio']
+        fields = ['name', 'pseudonym', 'year_born', 'country', 'author_picture', 'authors_bio']
 
         min_year_born = Author.MIN_YEAR_BORN
         super_user_email = Book.SUPER_USER_EMAIL
@@ -32,7 +32,7 @@ class AuthorForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(
                 attrs={'placeholder': 'Author`s name...',
-                       'autofocus': True,}
+                       'autofocus': True}
             ),
 
             'pseudonym': forms.TextInput(

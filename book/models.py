@@ -5,8 +5,6 @@ from django.db import models
 
 import datetime
 
-from django.db.models import F, Count
-
 from bookie.models import Bookie
 
 
@@ -24,6 +22,7 @@ class Book(models.Model):
     MIN_VALUE_FOR_NUMBER_SERIES = 1
 
     SUPER_USER_EMAIL = 'denny@gmail.com'
+    SUPERUSER_PK = 14
 
     cover_image = models.ImageField(
         upload_to='cover_images',
@@ -95,7 +94,6 @@ class Book(models.Model):
         help_text="Required only if the book belongs to series."
     )
 
-
     added_by = models.ForeignKey(
         'bookie.Bookie',
         on_delete=models.SET_NULL,
@@ -105,12 +103,6 @@ class Book(models.Model):
     added_on_date = models.DateField(
         blank=True,
         null=True,
-    )
-
-    last_edited_by_email = models.CharField(
-        max_length=Bookie.MAX_EMAIL_LENGTH,
-        null=True,
-        blank=True,
     )
 
     last_edited_on_date = models.DateField(

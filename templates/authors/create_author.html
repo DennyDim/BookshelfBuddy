@@ -5,9 +5,20 @@
         <title>New Author</title>
         <body>
             <div class="row col-md-6 mx-auto card-body text-center">
-                <form action="{% url 'create new author' %}" enctype="multipart/form-data" method="post" style="">
+                <form action="{% url 'create new author' %}" enctype="multipart/form-data" method="post">
                     {{ form|crispy }}
                     {% csrf_token %}
+                    
+                    {% for field in form %}
+                        {% if field.errors %}
+                        <div style="font-size: 30px; color: #ec0707; background-color: #cbb6b6">
+                            {{ field.errors|join:", " }}
+                        </div>
+                    {% endif %}
+                    {% endfor %}
+
+
+
                 
                     <input type="submit" class="btn btn-primary" value="Add new author">
                 </form>

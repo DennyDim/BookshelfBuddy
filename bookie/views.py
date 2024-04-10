@@ -1,8 +1,7 @@
 from django.contrib.auth import logout
 
 from django.contrib.auth.views import LoginView
-
-
+from bookie.models import Bookie
 from django.shortcuts import render, redirect, get_object_or_404
 
 from book.filters import BookFilterByTitle
@@ -11,15 +10,12 @@ from bookie import forms as bookie_forms
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, UpdateView, DeleteView, CreateView
+from django.views.generic import DetailView, UpdateView, CreateView
 
 from bookie.models import Bookie, BookieProfile
 
-
-from bookie.forms import BookieProfileForm, BookieDisplayProfileForm, DeleteBokieForm
+from bookie.forms import BookieProfileForm, BookieDisplayProfileForm
 from datetime import datetime
-
-from bookie.decorators import allowed_users
 
 
 class RegisterBookieView(CreateView):
@@ -28,7 +24,6 @@ class RegisterBookieView(CreateView):
     success_url = reverse_lazy("login bookie")
 
     def form_valid(self, form):
-
         form.instance.date_joined = datetime.now()
 
         return super().form_valid(form)
@@ -62,7 +57,6 @@ class ProfileDetailView(DetailView):
     template_name = 'bookies/profile.html'
 
     def get_object(self, queryset=None):
-
         user_id = self.kwargs.get('pk')
 
         user = get_object_or_404(Bookie, id=user_id)
@@ -94,7 +88,6 @@ class ProfileDetailView(DetailView):
 
 
 class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-
     model = BookieProfile
     form_class = BookieProfileForm
     template_name = 'bookies/edit_profile.html'
@@ -119,30 +112,20 @@ class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return context
 
     def test_func(self):
-
         return self.request.user.pk == self.kwargs.get('pk') or self.request.user.is_superuser
 
 
-class BookieDeleteView(DeleteView):
-    model = Bookie
-    success_url = reverse_lazy('main_page')
-    form_class = DeleteBokieForm
-
-    def test_func(self):
-
-        current_pk = self.get_object()
-        print(current_pk)
-        return self.request.user.is_superuser or current_pk == self.request.user.pk
-
-
-@allowed_users(['superuser', 'auth user'])
 def my_delete(request, pk):
-    print(f"my_delete {pk}")
-    to_be_deleted = get_object_or_404(Bookie, pk=pk)
+    context = {
+        'current_pk': pk
+    }
 
     if request.method == "POST":
-        to_be_deleted.delete()
-        return redirect('main page')
+        if request.user.is_authenticated:
+            current_user = get_object_or_404(Bookie, pk=pk)
+            logout(request)
+            current_user.delete()
 
-    return render(request, "bookies/delete_profile.html")
+            return redirect('main page')
 
+    return render(request, 'bookies/delete_profile.html', context)

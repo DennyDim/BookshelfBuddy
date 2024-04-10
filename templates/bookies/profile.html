@@ -17,26 +17,40 @@
                 <ul type="none">
                     <img src='{{ current_profile.profile_picture.url }}' alt="Profile Picture" style="width: 200px">
                 
-                    <li>Email: {{ current_email }}</li>
+                     <ul class="list-unstyled">
 
-                    <li>Age: {{ current_profile.user.age }}</li>
+                        <li><div class="container row col">
+                            <h4 class="text-light"><span class="text-dark">Email:
+                            </span> {{ current_email }}</h4>
+                        </div></li>
+
+                        <li><div class="container row col">
+                            <h4 class="text-light"><span class="text-dark">Age:
+                            </span> {{ current_profile.user.age }}</h4>
+                        </div></li>
+                     
+                        <li><div class="container row col">
+                            <h4 class="text-light"><span class="text-dark">From:
+                            </span> {% if current_profile.country %}{{ current_profile.country }}
+                        {% else %}Not set{% endif %}</h4>
+                        </div></li>
                 
-                    <li>From: {% if current_profile.country %}{{ current_profile.country }}
-                        {% else %}Not set{% endif %}</li>
-                    <li>About me: {% if current_profile.bio %}{{ current_profile.bio }}{% else %}
-                    The user hasn`t shared anything yet.{% endif %}</li>
+                        <li><div class="container row col">
+                            <h4 class="text-light"><span class="text-dark">About me:
+                            </span> {% if current_profile.bio %}{{ current_profile.bio }}{% else %}
+                                The user hasn`t shared anything yet.{% endif %}</h4>
+                            </div></li>
+                    
                 
                     {# CRUD OPERATIONS FOR SUPERUSERS AND OWNERS OF THE PROFILE #}
                     {% if current_profile.pk == current_user.pk %}
                         <a class="btn btn-primary container row justify-content-center" 
                            href="{% url 'edit bookie profile' pk=request.user.pk %}">Edit My Profile</a>
                         
-                                        
-                        <form  method="post" action="{% url 'delete bookie profile' pk=current_user.pk %}">
-                            {% csrf_token %}
-                            <button type="submit" onclick="confirmDelete();"
-                            class="btn container row">Delete My Profile</button>
-                        </form>
+                        
+
+                        <a class="btn container row justify-content-center"
+                           href="{% url 'delete bookie profile' pk=request.user.pk %}">Delete My Profile</a>
                         
                     {% endif %}
                         {% if current_user.is_superuser and current_profile.pk != current_user.pk %}

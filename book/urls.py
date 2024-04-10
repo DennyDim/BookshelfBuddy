@@ -6,7 +6,7 @@ from book import views as book_views
 
 urlpatterns = [
 
-    path('search/', book_views.search_view , name='search by title'),
+    path('search/', book_views.search_view, name='search by title'),
 
     path('add-to-wishlist/', book_views.AddBookToWishlistView.as_view(), name='add to wishlist'),
     path('already-read/', book_views.AddBookToAlreadyReadView.as_view(), name='add to already read'),
@@ -19,7 +19,7 @@ urlpatterns = [
     path('books/<int:pk>/', include([
         path('', book_views.BookDetailView.as_view(), name='book details'),
         path('edit/', book_views.BookUpdateView.as_view(), name='update book'),
-        path('delete/', book_views.BookDeleteView.as_view(), name='delete book'),
+        path('delete/', book_views.delete_book, name='delete book'),
 
     ]))
 

@@ -14,6 +14,14 @@
                  enctype="multipart/form-data">
                     
                     {{ form|crispy }}
+                    
+                    {% for field in form %}
+                        {% if field.errors %}
+                        <div style="font-size: 30px; color: #ec0707; background-color: #cbb6b6">
+                            {{ field.errors|join:", " }}
+                        </div>
+                    {% endif %}
+                    {% endfor %}
                     {% csrf_token %}
                     
                     <input type="submit" class="btn btn-primary" value="Save Changes"/>

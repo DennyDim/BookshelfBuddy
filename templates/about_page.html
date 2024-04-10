@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main_content %}
+
+<body style="background-image: url('{% static 'images/nav-bg.jpg' %}');" class="background-image">
+
+    <link rel="stylesheet" type="text/css" href="{%  static 'css/no-books-left.css' %}">
+
+    <div class="background-image">
+        <div class="content">
+            <h1>Welcome to BookshelfBuddy!</h1>
+            <p class="custom-message-about">
+            We are the experts in comfort, rainy days and hor beverages.
+                
+            At BookshelfBuddy, we believe in the power of literature to inspire, entertain, and connect us all.
+                Our platform is dedicated to helping book enthusiasts discover new reads, explore their favorite authors,
+                and share their thoughts through reviews.
+                Whether you're a seasoned reader or just starting your literary journey, we're here to accompany you every step of the way.
+
+                <br><br>
+                Our Mission:
+                <br>
+
+                Our mission is simple: to create a welcoming space where book lovers of all ages can come together 
+                to celebrate the magic of storytelling. We strive to foster a community built on respect, curiosity, and a shared love for adventures.
+                
+                <br><br>
+                What We Offer:
+                <br>
+                Explore Books: Dive into our extensive collection of books spanning 
+                various genres, from timeless classics to contemporary bestsellers. 
+                With our user-friendly interface, finding your next read has never been easier.
+                
+                <br>
+                Discover Authors: Learn more about the talented authors behind your favorite books.
+                Explore their biographies, bibliographies, and delve into the stories that shaped their literary careers.
+                
+                <br>
+                Share Reviews: Express your thoughts and opinions by writing reviews for the books you've read. 
+                Share insights, recommendations, and connect with fellow readers who share your interests.
+                
+                <br>
+                Age Restrictions: We take the safety and well-being of our users seriously. 
+                Certain features of our website may be restricted based on age to ensure a safe and appropriate experience for all members of our community.
+                
+                <br>
+                Random Book Button: Feeling adventurous? Click our "Random Book" button to 
+                discover a new book at random. It's a fun way to explore titles you might not have otherwise considered.
+                
+                <br>
+                
+                You can contact us on the following email <a href="{% url 'bookie profile' pk=super_user_pk %}">
+                {{ super_user_email }}
+            </a>.
+
+            </p>
+
+        </div>
+    </div>
+
+</body>
+
+
+{% endblock %}

@@ -13,6 +13,13 @@
                 <form method="post" action="{% url "update book" pk=book.pk %}" enctype="multipart/form-data">
                     
                     {{ form|crispy }}
+                    {% for field in form %}
+                        {% if field.errors %}
+                        <div style="font-size: 30px; color: #ec0707; background-color: #cbb6b6">
+                            {{ field.errors|join:'/n' }}
+                        </div>
+                    {% endif %}
+                    {% endfor %}
                     {% csrf_token %}
                     
                     <input  type="submit" class="btn btn-primary container row justify-content-center" 
